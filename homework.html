@@ -7,47 +7,78 @@
     <title>HTML შესავალი - საშინაო დავალება</title>
     <style>
         :root {
-            --bg: #f4f6fb;
+            /* პალიტრა: pacific blue / blue slate / platinum / tangerine dream */
+            --pacific: #5c9ead;
+            --slate: #326273;
+            --tangerine: #e39774;
+
+            --bg: #eeeeee;
             --card: #ffffff;
-            --text: #1c2333;
-            --muted: #5a6479;
-            --line: #d8deea;
-            --accent: #3555d8;
+            --soft: #eeeeee;
+            --soft-hover: #e2e6e7;
+            --text: #1e2f36;
+            --muted: #56666d;
+            --accent: #326273;
             --accent-ink: #ffffff;
-            --accent-weak: #e9eeff;
-            --ok: #17803f;
-            --ok-bg: #e5f5eb;
-            --bad: #c42b2b;
-            --bad-bg: #fdeaea;
-            --miss: #a45f00;
-            --miss-bg: #fff2d9;
-            --code-bg: #171c30;
-            --code-fg: #e8ebf7;
-            --code-mute: #8f98b8;
-            --code-sel: #34428f;
-            --radius: 12px;
+            --accent-weak: #e1edf0;
+            --fill: #5c9ead;
+            --track: #d6dcde;
+            --ok: #2a5b6a;
+            --ok-bg: #d8eaee;
+            --bad: #a04c28;
+            --bad-bg: #fbe9df;
+            --code-bg: #f1f2f3;
+            --code-fg: #22333a;
+            --code-mute: #7f8f95;
+            --code-hover: rgba(50, 98, 115, .07);
+            --code-sel: rgba(92, 158, 173, .28);
+            --code-ok: rgba(92, 158, 173, .30);
+            --code-bad: rgba(227, 151, 116, .34);
+            --code-miss: rgba(50, 98, 115, .16);
+            /* კოდის ფერები - VS Code Light+ */
+            --tok-tag: #800000;
+            --tok-attr: #e50000;
+            --tok-str: #0000ff;
+            --tok-punct: #800000;
+            --tok-com: #008000;
+            --tok-ent: #ee0000;
+            --drag-bg: #d7e6eb;
+            --radius: 16px;
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --bg: #0f1320;
-                --card: #171c2e;
-                --text: #e8ebf5;
-                --muted: #a2abc2;
-                --line: #2a3250;
-                --accent: #8aa2ff;
-                --accent-ink: #0f1320;
-                --accent-weak: #222b4d;
-                --ok: #5fd68a;
-                --ok-bg: #12301f;
-                --bad: #ff8585;
-                --bad-bg: #3a1a1d;
-                --miss: #ffc266;
-                --miss-bg: #3a2b10;
-                --code-bg: #0b0f1d;
-                --code-fg: #e8ebf7;
-                --code-mute: #8089aa;
-                --code-sel: #2f3c86;
+                --bg: #0f1a1e;
+                --card: #16252b;
+                --soft: #1e3038;
+                --soft-hover: #27404a;
+                --text: #e6eef0;
+                --muted: #97adb5;
+                --accent: #8cc3d0;
+                --accent-ink: #0f1a1e;
+                --accent-weak: #1d3a44;
+                --fill: #5c9ead;
+                --track: #22373f;
+                --ok: #9fd3df;
+                --ok-bg: #1c3d48;
+                --bad: #f2b595;
+                --bad-bg: #3d2c23;
+                --code-bg: #0f1b20;
+                --code-fg: #dbe8ec;
+                --code-mute: #6f8790;
+                --code-hover: rgba(255, 255, 255, .06);
+                --code-sel: rgba(92, 158, 173, .30);
+                --code-ok: rgba(92, 158, 173, .32);
+                --code-bad: rgba(227, 151, 116, .28);
+                --code-miss: rgba(140, 195, 208, .18);
+                /* კოდის ფერები - VS Code Dark+ */
+                --tok-tag: #569cd6;
+                --tok-attr: #9cdcfe;
+                --tok-str: #ce9178;
+                --tok-punct: #808080;
+                --tok-com: #6a9955;
+                --tok-ent: #d7ba7d;
+                --drag-bg: #264452;
             }
         }
 
@@ -71,7 +102,7 @@
             background: var(--accent-weak);
             color: var(--text);
             padding: 1px 6px;
-            border-radius: 5px;
+            border-radius: 6px;
         }
 
         :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
@@ -80,46 +111,45 @@
         .top {
             max-width: 820px;
             margin: 0 auto;
-            padding: 28px 16px 8px;
+            padding: 32px 16px 8px;
         }
-        .top h1 { margin: 0 0 4px; font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.25; }
+        .top h1 { margin: 0 0 4px; font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.25; font-weight: 700; }
         .top p { margin: 0; color: var(--muted); }
+        .top h1::after { content: ""; display: block; width: 44px; height: 4px; margin-top: 10px; border-radius: 4px; background: var(--tangerine); }
 
         .progress {
             position: sticky;
             top: 0;
             z-index: 10;
             background: var(--bg);
-            border-bottom: 1px solid var(--line);
             margin-top: 12px;
         }
         .progress-in {
             max-width: 820px;
             margin: 0 auto;
-            padding: 8px 16px;
+            padding: 10px 16px;
             display: flex;
             align-items: center;
             gap: 14px;
             font-size: .92rem;
         }
-        .progress-in span { white-space: nowrap; font-weight: 600; }
-        .track { flex: 1; height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
-        .fillbar { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+        .progress-in span { white-space: nowrap; font-weight: 600; color: var(--muted); }
+        .track { flex: 1; height: 8px; background: var(--track); border-radius: 99px; overflow: hidden; }
+        .fillbar { height: 100%; width: 0; background: var(--fill); border-radius: 99px; transition: width .2s; }
 
         main, footer { max-width: 820px; margin: 0 auto; padding: 0 16px; }
-        main { padding-top: 16px; padding-bottom: 8px; }
+        main { padding-top: 12px; padding-bottom: 8px; }
 
         .card {
             background: var(--card);
-            border: 1px solid var(--line);
             border-radius: var(--radius);
-            padding: 18px 20px;
-            margin-bottom: 16px;
+            padding: 22px 24px;
+            margin-bottom: 14px;
         }
-        .card h2 { margin: 0 0 10px; font-size: 1.2rem; }
+        .card h2 { margin: 0 0 10px; font-size: 1.15rem; }
 
         /* ---------- ინსტრუქცია ---------- */
-        .types { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
+        .types { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
         .types li { display: flex; gap: 10px; align-items: baseline; }
         .badge {
             display: inline-block;
@@ -128,26 +158,27 @@
             background: var(--accent-weak);
             color: var(--accent);
             font-size: .8rem;
-            font-weight: 700;
+            font-weight: 600;
             white-space: nowrap;
         }
-        .note { color: var(--muted); margin: 0 0 14px; font-size: .95rem; }
-        .name label { display: block; font-weight: 600; margin-bottom: 4px; }
+        .note { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+        .name label { display: block; font-weight: 600; margin-bottom: 6px; }
         .name input {
             width: 100%;
             max-width: 420px;
-            padding: 10px 12px;
+            padding: 11px 14px;
             font: inherit;
             color: var(--text);
-            background: var(--bg);
-            border: 1px solid var(--line);
-            border-radius: 8px;
+            background: var(--soft);
+            border: 0;
+            border-radius: 10px;
         }
+        .name input::placeholder, .fillin::placeholder { color: var(--muted); }
         .err { color: var(--bad); margin: 6px 0 0; font-weight: 600; }
 
         /* ---------- კითხვის ბარათი ---------- */
         .q { scroll-margin-top: 70px; }
-        .qh { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 1rem; }
+        .qh { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 1rem; }
         .num {
             display: inline-grid;
             place-items: center;
@@ -155,17 +186,15 @@
             height: 34px;
             padding: 0 6px;
             border-radius: 50%;
-            background: var(--accent);
-            color: var(--accent-ink);
+            background: var(--accent-weak);
+            color: var(--accent);
             font-weight: 700;
         }
-        .status { margin-left: auto; font-weight: 700; font-size: .9rem; }
-        .q.ok { border-left: 6px solid var(--ok); }
-        .q.bad { border-left: 6px solid var(--bad); }
-        .q.ok .status { color: var(--ok); }
-        .q.bad .status { color: var(--bad); }
+        .status { margin-left: auto; padding: 2px 12px; border-radius: 99px; font-weight: 700; font-size: .85rem; }
+        .q.ok .status { background: var(--ok-bg); color: var(--ok); }
+        .q.bad .status { background: var(--bad-bg); color: var(--bad); }
         .qt { margin: 0 0 4px; font-weight: 600; }
-        .hint { margin: 0 0 12px; color: var(--muted); font-size: .88rem; }
+        .hint { margin: 0 0 14px; color: var(--muted); font-size: .88rem; }
 
         /* არჩევანი */
         .opts { display: grid; gap: 8px; }
@@ -173,28 +202,31 @@
             display: flex;
             gap: 10px;
             align-items: flex-start;
-            padding: 10px 12px;
-            border: 1px solid var(--line);
-            border-radius: 10px;
+            padding: 11px 14px;
+            background: var(--soft);
+            border-radius: 12px;
             cursor: pointer;
         }
-        .opt:hover { border-color: var(--accent); }
+        .opt:hover { background: var(--soft-hover); }
         .opt input { margin-top: 5px; accent-color: var(--accent); }
-        .opt:has(input:checked) { border-color: var(--accent); background: var(--accent-weak); }
-        .opt.ok, .opt.ok:has(input:checked) { border-color: var(--ok); background: var(--ok-bg); }
-        .opt.bad, .opt.bad:has(input:checked) { border-color: var(--bad); background: var(--bad-bg); }
+        .opt:has(input:checked) { background: var(--accent-weak); }
+        .opt.ok, .opt.ok:has(input:checked) { background: var(--ok-bg); }
+        .opt.bad, .opt.bad:has(input:checked) { background: var(--bad-bg); }
+        .opt.ok::after, .opt.bad::after { margin-left: auto; font-weight: 700; }
+        .opt.ok::after { content: "✔"; color: var(--ok); }
+        .opt.bad::after { content: "✘"; color: var(--bad); }
 
         /* კოდის ბლოკი */
         .code {
             background: var(--code-bg);
             color: var(--code-fg);
-            border-radius: 10px;
+            border-radius: 12px;
             padding: 10px 0;
             margin: 0;
             overflow-x: auto;
             font-size: .92rem;
         }
-        pre.code { padding: 12px 14px; white-space: pre; }
+        pre.code { padding: 14px 16px; white-space: pre; }
 
         /* შეცდომის პოვნა */
         .ln {
@@ -203,23 +235,26 @@
             gap: 14px;
             align-items: baseline;
             text-align: left;
-            padding: 3px 14px;
+            padding: 3px 16px;
             border: 0;
-            border-left: 4px solid transparent;
             background: transparent;
             color: var(--code-fg);
             font: inherit;
             cursor: pointer;
         }
-        .ln code { white-space: pre; font-size: inherit; }
+        .ln code { white-space: pre; font-size: inherit; background: none; padding: 0; }
         .ln .no { color: var(--code-mute); min-width: 1.6em; text-align: right; user-select: none; }
-        .ln:hover:not(:disabled) { background: rgba(255, 255, 255, .08); }
-        .ln[aria-pressed="true"] { background: var(--code-sel); border-left-color: #9fb2ff; }
+        .ln:hover:not(:disabled) { background: var(--code-hover); }
+        .ln[aria-pressed="true"] { background: var(--code-sel); }
         .ln:disabled { cursor: default; color: var(--code-fg); }
-        .ln.ok { background: rgba(70, 200, 120, .28); border-left-color: #46c878; }
-        .ln.bad { background: rgba(255, 100, 100, .30); border-left-color: #ff6464; }
-        .ln.miss { background: rgba(255, 190, 80, .22); border-left-color: #ffbe50; }
-        .fixes { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .92rem; }
+        .ln.ok { background: var(--code-ok); }
+        .ln.bad { background: var(--code-bad); }
+        .ln.miss { background: var(--code-miss); }
+        .ln.ok::after, .ln.bad::after, .ln.miss::after { margin-left: auto; font-weight: 700; font-size: .85rem; white-space: nowrap; }
+        .ln.ok::after { content: "✔ სწორია"; color: var(--ok); }
+        .ln.bad::after { content: "✘ აქ შეცდომა არ არის"; color: var(--bad); }
+        .ln.miss::after { content: "← აქ იყო შეცდომა"; color: var(--code-fg); }
+        .fixes { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .92rem; }
 
         /* თანმიმდევრობა */
         .order { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
@@ -230,46 +265,59 @@
             padding: 6px 8px 6px 10px;
             background: var(--code-bg);
             color: var(--code-fg);
-            border-radius: 8px;
-            border: 2px solid transparent;
+            border-radius: 10px;
+            position: relative;
+            user-select: none;
         }
-        .ord[draggable="true"] { cursor: grab; }
-        .ord code { flex: 1; white-space: pre-wrap; word-break: break-word; font-size: .92rem; }
-        .ord .grip { color: var(--code-mute); min-width: 1.4em; text-align: center; user-select: none; letter-spacing: -2px; }
-        .ord.dragging { opacity: .45; }
-        .ord.over { border-color: #9fb2ff; }
-        .ord.ok { border-color: #46c878; }
-        .ord.bad { border-color: #ff6464; }
+        .ord.can-drag { cursor: grab; }
+        .ord code { flex: 1; white-space: pre-wrap; word-break: break-word; font-size: .92rem; background: none; padding: 0; }
+        .ord .grip { color: var(--code-mute); min-width: 28px; align-self: stretch; display: flex; align-items: center; justify-content: center; letter-spacing: -2px; touch-action: none; }
+        .ord.can-drag .grip { cursor: grab; }
+        .ord.dragging { z-index: 3; cursor: grabbing; background: var(--drag-bg); box-shadow: 0 8px 22px rgba(30, 47, 54, .25); }
+        .ord.drop-before::before, .ord.drop-after::after { content: ""; position: absolute; left: 8px; right: 8px; height: 3px; border-radius: 3px; background: var(--tangerine); z-index: 5; }
+        .ord.drop-before::before { top: -5px; }
+        .ord.drop-after::after { bottom: -5px; }
+        .t-tag { color: var(--tok-tag); }
+        .t-attr { color: var(--tok-attr); }
+        .t-str { color: var(--tok-str); }
+        .t-punct { color: var(--tok-punct); }
+        .t-com { color: var(--tok-com); font-style: italic; }
+        .t-ent { color: var(--tok-ent); }
+        .ord.ok { background: var(--code-ok); }
+        .ord.bad { background: var(--code-bad); }
+        .ord.ok::after, .ord.bad::after { font-weight: 700; padding-right: 6px; }
+        .ord.ok::after { content: "✔"; color: var(--ok); }
+        .ord.bad::after { content: "✘"; color: var(--bad); }
         .mini {
             width: 36px;
             height: 36px;
-            border: 1px solid rgba(255, 255, 255, .25);
+            border: 0;
             border-radius: 8px;
-            background: transparent;
+            background: rgba(127, 127, 140, .16);
             color: var(--code-fg);
             font-size: 1.05rem;
             cursor: pointer;
         }
-        .mini:hover:not(:disabled) { background: rgba(255, 255, 255, .14); }
+        .mini:hover:not(:disabled) { background: rgba(127, 127, 140, .30); }
         .mini:disabled { opacity: .3; cursor: default; }
-        .correct-order { margin-top: 10px; }
-        .correct-order p { margin: 0 0 4px; font-weight: 600; font-size: .92rem; }
+        .correct-order { margin-top: 12px; }
+        .correct-order p { margin: 0 0 6px; font-weight: 600; font-size: .92rem; }
 
         /* ჩაწერა */
-        .fill { padding: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
-        .fill code { white-space: pre-wrap; }
+        .fill { padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+        .fill code { white-space: pre-wrap; background: none; padding: 0; }
         input.fillin {
             width: 9ch;
             min-width: 7ch;
-            padding: 5px 8px;
+            padding: 5px 9px;
             font-size: 1rem;
-            color: #1c2333;
-            background: #fff;
-            border: 2px solid #9fb2ff;
-            border-radius: 6px;
+            color: var(--text);
+            background: var(--card);
+            border: 0;
+            border-radius: 8px;
         }
-        input.fillin.ok { border-color: #46c878; background: #dff6e8; }
-        input.fillin.bad { border-color: #ff6464; background: #fde4e4; }
+        input.fillin.ok { background: var(--ok-bg); color: var(--ok); }
+        input.fillin.bad { background: var(--bad-bg); color: var(--bad); }
         .ans { margin: 8px 0 0; font-size: .92rem; font-weight: 600; }
 
         /* შესაბამისობა */
@@ -279,32 +327,35 @@
             grid-template-columns: minmax(110px, 170px) 1fr;
             gap: 8px 12px;
             align-items: center;
-            padding: 8px 10px;
-            border: 1px solid var(--line);
-            border-radius: 10px;
+            padding: 8px 12px;
+            background: var(--soft);
+            border-radius: 12px;
         }
-        .mrow code { font-weight: 700; }
+        .mrow code { font-weight: 700; background: none; padding: 0; }
         .mrow select {
             width: 100%;
-            padding: 8px;
+            padding: 9px 10px;
             font: inherit;
             color: var(--text);
-            background: var(--bg);
-            border: 1px solid var(--line);
+            background: var(--card);
+            border: 0;
             border-radius: 8px;
         }
         .mrow .ans { grid-column: 1 / -1; margin: 0; color: var(--bad); }
-        .mrow.ok { border-color: var(--ok); background: var(--ok-bg); }
-        .mrow.bad { border-color: var(--bad); background: var(--bad-bg); }
+        .mrow.ok { background: var(--ok-bg); }
+        .mrow.bad { background: var(--bad-bg); }
+        .mrow.ok code::before { content: "✔ "; color: var(--ok); }
+        .mrow.bad code::before { content: "✘ "; color: var(--bad); }
 
         /* განმარტება */
         .explain {
             margin-top: 14px;
-            padding: 10px 14px;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
             background: var(--accent-weak);
             font-size: .95rem;
         }
+        .explain code { background: var(--card); }
         .explain strong { display: block; margin-bottom: 2px; }
         .explain p { margin: 0; }
 
@@ -312,27 +363,27 @@
         .btn {
             padding: 11px 22px;
             font: inherit;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--accent-ink);
             background: var(--accent);
             border: 0;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
         }
-        .btn:hover { filter: brightness(1.1); }
-        .btn.ghost { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .btn:hover { filter: brightness(1.08); }
+        .btn.ghost { background: var(--card); color: var(--accent); }
         .submit { text-align: center; padding: 8px 0 24px; }
-        .submit .btn { font-size: 1.1rem; padding: 14px 40px; }
-        .submit p { color: var(--muted); margin: 8px 0 0; font-size: .92rem; }
+        .submit .btn { font-size: 1.1rem; padding: 14px 44px; }
+        .submit p { color: var(--muted); margin: 10px 0 0; font-size: .92rem; }
 
         /* შედეგი */
-        .result { border: 2px solid var(--accent); }
+        .result { background: var(--accent-weak); }
         .result .who { margin: 0; color: var(--muted); }
-        .score { margin: 6px 0; font-size: 2.6rem; font-weight: 800; line-height: 1.2; }
+        .score { margin: 6px 0; font-size: 2.6rem; font-weight: 700; line-height: 1.2; }
         .score small { font-size: 1.2rem; font-weight: 600; color: var(--muted); margin-left: 6px; }
         .msg { margin: 0 0 12px; font-weight: 600; }
         .bytype { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
-        .bytype li { padding: 4px 12px; border: 1px solid var(--line); border-radius: 99px; font-size: .9rem; }
+        .bytype li { padding: 4px 14px; background: var(--card); border-radius: 99px; font-size: .9rem; }
         .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .actions label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
         .only-wrong .q.ok { display: none; }
@@ -343,7 +394,7 @@
         footer { text-align: center; color: var(--muted); font-size: .9rem; padding-bottom: 32px; }
 
         @media (max-width: 520px) {
-            .card { padding: 14px; }
+            .card { padding: 16px; }
             .mrow { grid-template-columns: 1fr; }
             .progress-in span { font-size: .82rem; }
         }
@@ -354,13 +405,13 @@
 
     <header class="top">
         <h1>საშინაო დავალება: HTML შესავალი</h1>
-        <p>ლექცია 4 · 25 კითხვა · თითო სწორი პასუხი = 1 ქულა</p>
+        <p>ლექცია 4 · 24 კითხვა · თითო სწორი პასუხი = 1 ქულა</p>
     </header>
 
     <div class="progress">
         <div class="progress-in">
-            <span id="progressText">პასუხი გაცემულია: 0 / 25</span>
-            <div class="track" role="progressbar" aria-label="პროგრესი" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+            <span id="progressText">პასუხი გაცემულია: 0 / 24</span>
+            <div class="track" role="progressbar" aria-label="პროგრესი" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0">
                 <div class="fillbar" id="progressBar"></div>
             </div>
         </div>
@@ -707,6 +758,7 @@
             // 22
             {
                 type: 'order',
+                lang: 'text',
                 text: 'დაალაგე ნაბიჯები: როგორ ვიწყებთ ახალ HTML გვერდს ლექციის მიხედვით.',
                 lines: [
                     'შექმენი ახალი საქაღალდე',
@@ -718,19 +770,6 @@
                 explain: 'ჯერ საქაღალდე და ფაილი, მერე `!` + `Tab` HTML ჩონჩხისთვის, ბოლოს შენახვა (`Ctrl + S`) და ბრაუზერში გახსნა. ცვლილების შემდეგ `F5` გვერდს ანახლებს.'
             },
             // 23
-            {
-                type: 'choice',
-                text: 'სწორი პრაქტიკით, რამდენი `<h1>` უნდა იყოს ერთ გვერდზე?',
-                options: [
-                    'ერთი - მთავარი სათაური',
-                    'ზუსტად ექვსი',
-                    'რამდენიც გვინდა',
-                    'არცერთი - `h1` მოძველებულია'
-                ],
-                answer: 0,
-                explain: 'გვერდზე ერთი `<h1>` უნდა იყოს - მთავარი სათაური. ქვესათაურებისთვის `h2`-დან `h6`-მდე გამოიყენება.'
-            },
-            // 24
             {
                 type: 'bug',
                 text: 'რომელ ხაზშია შეცდომა?',
@@ -745,7 +784,7 @@
                 fix: { 4: 'წაშალე ეს ხაზი' },
                 explain: '`<img>`-ს დახურვის თეგი არ სჭირდება - ის ცალკე თეგია, ისევე როგორც `<br>` და `<hr>`.'
             },
-            // 25
+            // 24
             {
                 type: 'bug',
                 text: 'ამ გვერდზე ორი შეცდომაა. მონიშნე ორივე ხაზი.',
@@ -794,9 +833,69 @@
             return e;
         }
 
+        /* HTML კოდის ფერადი გამოყოფა VS Code-ის მსგავსად: თეგი, ატრიბუტი, მნიშვნელობა, კომენტარი, სიმბოლო (&lt;).
+           ბრაუზერის DOM-ით ვაგებთ (არა innerHTML-ით), ამიტომ ტექსტი ყოველთვის უსაფრთხოა.
+           opts.slot - ელემენტი (მაგ. input), რომელიც ჩაჯდება ტექსტში `{}`-ის ადგილას. */
+        const TOK = {
+            comment: /<!--[\s\S]*?(-->|$)/y,
+            doctype: /<!DOCTYPE/iy,
+            tagOpen: /<(\/?)([A-Za-z][\w:-]*)/y,
+            entity: /&#?\w+;/y,
+            text: /[^<&]+/y,
+            ws: /\s+/y,
+            tagEnd: /\/?>/y,
+            attr: /[^\s=>\/"']+/y,
+            str: /"[^"]*("|$)|'[^']*('|$)/y
+        };
+
+        function highlight(src, opts = {}) {
+            const frag = document.createDocumentFragment();
+            const slot = opts.slot || null;
+            let inTag = !!opts.inTag;
+            let i = 0;
+
+            const put = (cls, text) => {
+                if (!text) return;
+                const box = cls ? h('span', { class: cls }) : frag;
+                const parts = slot && text.includes('{}') ? text.split('{}') : [text];
+                parts.forEach((p, k) => {
+                    if (k > 0) box.append(slot);
+                    if (p) box.append(p);
+                });
+                if (cls) frag.append(box);
+            };
+            const at = re => { re.lastIndex = i; return re.exec(src); };
+
+            while (i < src.length) {
+                let m;
+                if (!inTag) {
+                    if ((m = at(TOK.comment))) { put('t-com', m[0]); i += m[0].length; }
+                    else if ((m = at(TOK.doctype))) { put('t-punct', '<!'); put('t-tag', m[0].slice(2)); i += m[0].length; inTag = true; }
+                    else if ((m = at(TOK.tagOpen))) { put('t-punct', '<' + m[1]); put('t-tag', m[2]); i += m[0].length; inTag = true; }
+                    else if ((m = at(TOK.entity))) { put('t-ent', m[0]); i += m[0].length; }
+                    else if ((m = at(TOK.text))) { put('', m[0]); i += m[0].length; }
+                    else { put('', src[i]); i++; }
+                } else {
+                    if ((m = at(TOK.tagEnd))) { put('t-punct', m[0]); i += m[0].length; inTag = false; }
+                    else if ((m = at(TOK.ws))) { put('', m[0]); i += m[0].length; }
+                    else if ((m = at(TOK.str))) { put('t-str', m[0]); i += m[0].length; }
+                    else if ((m = at(TOK.attr))) { put('t-attr', m[0]); i += m[0].length; }
+                    else { put('', src[i]); i++; }
+                }
+            }
+            return frag;
+        }
+
+        // მოკლე ფრაგმენტი (ტექსტის შიგნით `...`) ფერადდება მხოლოდ თუ HTML-ს ჰგავს: <p>, &lt;, type="text"
+        function codeNode(text) {
+            if (/^[\w-]+="[^"]*"$/.test(text)) return highlight(text, { inTag: true });
+            if (/^<[!\/]?[A-Za-z]/.test(text) || /^&#?\w+;$/.test(text)) return highlight(text);
+            return text;
+        }
+
         // `ასე` ჩაწერილ ნაწილს <code>-ად აქცევს (უსაფრთხოდ, textContent-ით)
         function rich(text) {
-            return text.split('`').map((part, i) => (i % 2 ? h('code', {}, part) : part));
+            return text.split('`').map((part, i) => (i % 2 ? h('code', {}, codeNode(part)) : part));
         }
 
         function shuffle(arr) {
@@ -891,15 +990,73 @@
             const root = h('div');
             const list = h('ul', { class: 'order' });
             root.append(list);
-            let dragFrom = null;
-
-            function move(from, to) {
+            function move(from, to, focus = true) {
                 if (to < 0 || to >= st.items.length || from === to) return;
                 const [x] = st.items.splice(from, 1);
                 st.items.splice(to, 0, x);
                 st.touched = true;
-                paint({ idx: to, dir: to < from ? 'up' : 'down' });
+                paint(focus ? { idx: to, dir: to < from ? 'up' : 'down' } : undefined);
                 updateProgress();
+            }
+
+            // გადათრევა მაუსით ან თითით (Pointer Events). გადათრევისას სიას თავიდან არ ვაგებთ - მხოლოდ ვწევთ ხაზს
+            // და ვაჩვენებთ, სად ჩავარდება. ადგილი იცვლება გაშვების მომენტში.
+            let dragging = false;
+            function startDrag(e, from, li) {
+                if (dragging) return;
+                dragging = true;
+                const items = [...list.children];
+                const rects = items.map(el => {
+                    const r = el.getBoundingClientRect();
+                    return { top: r.top + window.scrollY, bottom: r.bottom + window.scrollY };
+                });
+                const startPageY = e.clientY + window.scrollY;
+                let clientY = e.clientY;
+                let target = from;
+                let raf = 0;
+
+                li.classList.add('dragging');
+
+                const update = () => {
+                    const pageY = clientY + window.scrollY;
+                    li.style.transform = `translateY(${pageY - startPageY}px)`;
+                    const hit = rects.findIndex(r => pageY < r.bottom);
+                    target = hit === -1 ? items.length - 1 : hit;
+                    items.forEach((el, k) => {
+                        el.classList.toggle('drop-before', k === target && target < from);
+                        el.classList.toggle('drop-after', k === target && target > from);
+                    });
+                };
+                // გვერდის თავისით გადახვევა, როცა ხაზს ეკრანის ზედა/ქვედა კიდესთან მიიტან
+                const tick = () => {
+                    const edge = 70, speed = 16;
+                    if (clientY < edge) window.scrollBy(0, -speed * Math.min(1, 1 - clientY / edge));
+                    else if (clientY > window.innerHeight - edge) window.scrollBy(0, speed * Math.min(1, 1 - (window.innerHeight - clientY) / edge));
+                    update();
+                    raf = requestAnimationFrame(tick);
+                };
+                const onMove = ev => {
+                    if (ev.pointerId !== e.pointerId) return;
+                    clientY = ev.clientY;
+                    update();
+                };
+                const end = ev => {
+                    if (ev.pointerId !== e.pointerId) return;
+                    if (ev.type === 'pointerup') { clientY = ev.clientY; update(); }   // საბოლოო ადგილი = სადაც გაუშვი
+                    cancelAnimationFrame(raf);
+                    window.removeEventListener('pointermove', onMove);
+                    window.removeEventListener('pointerup', end);
+                    window.removeEventListener('pointercancel', end);
+                    li.classList.remove('dragging');
+                    li.style.transform = '';
+                    items.forEach(el => el.classList.remove('drop-before', 'drop-after'));
+                    dragging = false;
+                    if (ev.type === 'pointerup') move(from, target, false);
+                };
+                window.addEventListener('pointermove', onMove);
+                window.addEventListener('pointerup', end);
+                window.addEventListener('pointercancel', end);
+                tick();
             }
 
             function paint(focus) {
@@ -907,32 +1064,23 @@
                 st.items.forEach((text, idx) => {
                     let cls = 'ord';
                     if (review) cls += text === q.correct[idx] ? ' ok' : ' bad';
-                    const li = h('li', { class: cls, draggable: !review });
+                    const li = h('li', { class: cls + (review ? '' : ' can-drag') });
                     li.append(
                         h('span', { class: 'grip', 'aria-hidden': 'true' }, review ? String(idx + 1) : '⋮⋮'),
-                        h('code', {}, text)
+                        h('code', {}, q.lang === 'text' ? text : highlight(text))
                     );
                     if (!review) {
                         li.append(
                             h('button', { type: 'button', class: 'mini up', 'aria-label': 'ზევით აწევა', disabled: idx === 0, onclick: () => move(idx, idx - 1) }, '↑'),
                             h('button', { type: 'button', class: 'mini down', 'aria-label': 'ქვევით ჩამოწევა', disabled: idx === st.items.length - 1, onclick: () => move(idx, idx + 1) }, '↓')
                         );
-                        li.addEventListener('dragstart', e => {
-                            dragFrom = idx;
-                            li.classList.add('dragging');
-                            e.dataTransfer.effectAllowed = 'move';
-                            e.dataTransfer.setData('text/plain', String(idx));
-                        });
-                        li.addEventListener('dragend', () => {
-                            li.classList.remove('dragging');
-                            list.querySelectorAll('.over').forEach(x => x.classList.remove('over'));
-                        });
-                        li.addEventListener('dragover', e => { e.preventDefault(); li.classList.add('over'); });
-                        li.addEventListener('dragleave', () => li.classList.remove('over'));
-                        li.addEventListener('drop', e => {
+                        li.addEventListener('pointerdown', e => {
+                            if (e.target.closest('.mini')) return;                     // ისრების ღილაკები თავისით მუშაობს
+                            if (e.pointerType === 'mouse' && e.button !== 0) return;
+                            // თითით მხოლოდ სახელურიდან (⋮⋮), რომ გვერდის გადახვევა არ დაიბლოკოს
+                            if (e.pointerType !== 'mouse' && !e.target.closest('.grip')) return;
                             e.preventDefault();
-                            if (dragFrom !== null) move(dragFrom, idx);
-                            dragFrom = null;
+                            startDrag(e, idx, li);
                         });
                     }
                     list.append(li);
@@ -948,7 +1096,7 @@
             if (review) {
                 root.append(h('div', { class: 'correct-order' },
                     h('p', {}, 'სწორი რიგი:'),
-                    h('pre', { class: 'code' }, q.lines.join('\n'))
+                    h('pre', { class: 'code' }, q.lang === 'text' ? q.lines.join('\n') : highlight(q.lines.join('\n')))
                 ));
             }
             return root;
@@ -961,7 +1109,7 @@
                 const n = k + 1;
                 const b = h('button', { type: 'button', class: 'ln', 'aria-pressed': String(st.sel.has(n)), disabled: review },
                     h('span', { class: 'no' }, String(n)),
-                    h('code', {}, line || ' ')
+                    h('code', {}, line ? highlight(line) : ' ')
                 );
                 if (review) {
                     const isBug = q.bugs.includes(n), picked = st.sel.has(n);
@@ -980,20 +1128,19 @@
             root.append(box);
             if (review) {
                 root.append(h('ul', { class: 'fixes' }, q.bugs.map(n =>
-                    h('li', {}, `სწორი ვერსია, ხაზი ${n}: `, h('code', {}, q.fix[n].trim()))
+                    h('li', {}, `სწორი ვერსია, ხაზი ${n}: `, h('code', {}, highlight(q.fix[n].trim())))
                 )));
             }
             return root;
         }
 
         function widgetFill(q, st, qi, review) {
-            const [before, after] = q.template.split('{}');
             const input = h('input', { type: 'text', class: 'fillin', autocomplete: 'off', spellcheck: 'false', maxlength: '20', 'aria-label': 'შენი პასუხი', disabled: review });
             input.value = st.val;
             if (review) input.classList.add(isCorrect(q, st) ? 'ok' : 'bad');
             input.addEventListener('input', () => { st.val = input.value; updateProgress(); });
             const root = h('div');
-            root.append(h('div', { class: 'code fill' }, h('code', {}, before), input, h('code', {}, after)));
+            root.append(h('div', { class: 'code fill' }, h('code', {}, highlight(q.template, { slot: input }))));
             if (review && !isCorrect(q, st)) {
                 root.append(h('p', { class: 'ans' }, 'სწორი პასუხი: ', h('code', {}, q.accept[0])));
             }
@@ -1013,7 +1160,7 @@
                 sel.addEventListener('change', () => { st.sel[k] = sel.value; updateProgress(); });
                 const ok = st.sel[k] === right;
                 box.append(h('div', { class: 'mrow' + (review ? (ok ? ' ok' : ' bad') : '') },
-                    h('code', {}, left),
+                    h('code', {}, codeNode(left)),
                     sel,
                     review && !ok ? h('span', { class: 'ans' }, 'სწორია: ' + right) : null
                 ));
