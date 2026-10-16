@@ -336,6 +336,9 @@
         .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
         .actions label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
         .only-wrong .q.ok { display: none; }
+        .send { margin: 0 0 12px; font-weight: 600; color: var(--muted); }
+        .send.ok { color: var(--ok); }
+        .send.bad { color: var(--bad); }
 
         footer { text-align: center; color: var(--muted); font-size: .9rem; padding-bottom: 32px; }
 
@@ -376,7 +379,7 @@
             <p class="note">პასუხები და განმარტებები გამოჩნდება მხოლოდ „შეფასებაზე“ დაჭერის შემდეგ. კითხვებზე პასუხი დაწერე ჯერ ლექციის ფაილის (<code>index.html</code>) გარეშე, მერე შეამოწმე.</p>
             <div class="name">
                 <label for="studentName">სახელი და გვარი</label>
-                <input type="text" id="studentName" autocomplete="name" placeholder="მაგ: გიორგი გიორგაძე">
+                <input type="text" id="studentName" autocomplete="name" maxlength="60" placeholder="მაგ: გიორგი გიორგაძე">
                 <p class="err" id="nameErr" hidden>ჯერ ჩაწერე სახელი და გვარი, რომ შედეგი შენზე იყოს დაწერილი.</p>
             </div>
         </section>
@@ -387,7 +390,9 @@
             <div class="score"><span id="resScore"></span><small id="resPercent"></small></div>
             <p class="msg" id="resMsg"></p>
             <ul class="bytype" id="resTypes"></ul>
+            <p class="send" id="sendStatus" role="status"></p>
             <div class="actions">
+                <button type="button" class="btn ghost" id="resendBtn" hidden>ხელახლა გაგზავნა</button>
                 <label><input type="checkbox" id="onlyWrong"> მხოლოდ არასწორების ჩვენება</label>
                 <button type="button" class="btn ghost" id="copyBtn">შედეგის კოპირება</button>
                 <button type="button" class="btn" id="retryBtn">თავიდან ცდა</button>
@@ -398,7 +403,7 @@
 
         <section class="submit" id="submitBox">
             <button type="button" class="btn" id="submitBtn">შეფასება</button>
-            <p>დააჭირე, როცა ყველა კითხვას უპასუხებ.</p>
+            <p>დააჭირე, როცა ყველა კითხვას უპასუხებ. შეფასებისას შენი სახელი, ქულა და დახარჯული დრო მასწავლებელს გაეგზავნება.</p>
         </section>
     </main>
 
@@ -828,6 +833,12 @@
 
         let S = QUESTIONS.map(initState);
         let submitted = false;
+        let startedAt = null;   // პირველი პასუხის დრო - აქედან ითვლება დახარჯული დრო
+
+        // შედეგები იგზავნება მასწავლებლის ბაზაში (mockapi.io). ველები: name, time (წამები), point
+        const API_URL = 'https://6ab52fad24ee9d3caa1c47c3.mockapi.io/all/students';
+        const fmtTime = sec => (sec > 0 ? Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') : '-');
+        let pendingPayload = null;
 
         function isAnswered(q, st) {
             switch (q.type) {
@@ -851,6 +862,7 @@
 
         function updateProgress() {
             const n = QUESTIONS.filter((q, i) => isAnswered(q, S[i])).length;
+            if (n > 0 && startedAt === null) startedAt = Date.now();
             document.getElementById('progressText').textContent = `პასუხი გაცემულია: ${n} / ${QUESTIONS.length}`;
             document.getElementById('progressBar').style.width = (n / QUESTIONS.length * 100) + '%';
             document.querySelector('.track').setAttribute('aria-valuenow', n);
@@ -1052,6 +1064,42 @@
            ===================================================== */
         let lastReport = '';
 
+        async function sendResult(payload) {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 12000);
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    signal: ctrl.signal
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return await res.json();
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
+        async function sendAndShow(payload) {
+            const status = document.getElementById('sendStatus');
+            const btn = document.getElementById('resendBtn');
+            pendingPayload = payload;
+            btn.hidden = true;
+            status.className = 'send';
+            status.textContent = 'შედეგი მასწავლებელთან იგზავნება…';
+            try {
+                await sendResult(payload);
+                pendingPayload = null;
+                status.className = 'send ok';
+                status.textContent = '✔ შედეგი მასწავლებელთან გაიგზავნა.';
+            } catch (err) {
+                status.className = 'send bad';
+                status.textContent = '✘ შედეგი ვერ გაიგზავნა (შეამოწმე ინტერნეტი). დააჭირე „ხელახლა გაგზავნას“ ან გადაუგზავნე მასწავლებელს „შედეგის კოპირებით“.';
+                btn.hidden = false;
+            }
+        }
+
         function submit() {
             const nameInput = document.getElementById('studentName');
             const name = nameInput.value.trim();
@@ -1079,6 +1127,7 @@
 
             const total = QUESTIONS.length;
             const pct = Math.round(score / total * 100);
+            const timeSec = startedAt ? Math.max(1, Math.round((Date.now() - startedAt) / 1000)) : 0;
             const now = new Date();
             const date = [now.getDate(), now.getMonth() + 1].map(n => String(n).padStart(2, '0')).concat(now.getFullYear()).join('.');
             let msg;
@@ -1087,7 +1136,7 @@
             else if (score >= 13) msg = 'საშუალო შედეგია. გადახედე ლექციის index.html ფაილს და სცადე ხელახლა.';
             else msg = 'კარგად გადახედე ლექციის მასალას (index.html) და სცადე ხელახლა - აუცილებლად გამოგივა!';
 
-            document.getElementById('resWho').textContent = `${name} · ${date}`;
+            document.getElementById('resWho').textContent = `${name} · ${date} · დრო: ${fmtTime(timeSec)}`;
             document.getElementById('resScore').textContent = `${score} / ${total}`;
             document.getElementById('resPercent').textContent = `${pct}%`;
             document.getElementById('resMsg').textContent = msg;
@@ -1099,18 +1148,21 @@
                 typesEl.append(h('li', {}, `${TYPE_LABEL[t]}: ${byType[t].ok} / ${byType[t].total}`));
                 typeLines.push(`${TYPE_LABEL[t]}: ${byType[t].ok}/${byType[t].total}`);
             });
-            lastReport = `HTML საშინაო დავალება\n${name}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\n${date}`;
+            lastReport = `HTML საშინაო დავალება\n${name}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\nდრო: ${fmtTime(timeSec)}\n${date}`;
 
             document.getElementById('result').hidden = false;
             document.getElementById('submitBox').hidden = true;
             document.querySelector('.progress').hidden = true;
             renderAll(true);
             document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            sendAndShow({ name, time: timeSec, point: score });
         }
 
         function retry() {
             S = QUESTIONS.map(initState);
             submitted = false;
+            startedAt = null;
+            pendingPayload = null;
             document.getElementById('result').hidden = true;
             document.getElementById('submitBox').hidden = false;
             document.querySelector('.progress').hidden = false;
@@ -1143,6 +1195,7 @@
         document.getElementById('submitBtn').addEventListener('click', submit);
         document.getElementById('retryBtn').addEventListener('click', retry);
         document.getElementById('copyBtn').addEventListener('click', copyReport);
+        document.getElementById('resendBtn').addEventListener('click', () => { if (pendingPayload) sendAndShow(pendingPayload); });
         document.getElementById('onlyWrong').addEventListener('change', e => {
             document.body.classList.toggle('only-wrong', e.target.checked);
         });
