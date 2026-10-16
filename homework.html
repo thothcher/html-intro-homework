@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML შესავალი - საშინაო დავალება</title>
+    <style>
+        :root {
+            --bg: #f4f6fb;
+            --card: #ffffff;
+            --text: #1c2333;
+            --muted: #5a6479;
+            --line: #d8deea;
+            --accent: #3555d8;
+            --accent-ink: #ffffff;
+            --accent-weak: #e9eeff;
+            --ok: #17803f;
+            --ok-bg: #e5f5eb;
+            --bad: #c42b2b;
+            --bad-bg: #fdeaea;
+            --miss: #a45f00;
+            --miss-bg: #fff2d9;
+            --code-bg: #171c30;
+            --code-fg: #e8ebf7;
+            --code-mute: #8f98b8;
+            --code-sel: #34428f;
+            --radius: 12px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1320;
+                --card: #171c2e;
+                --text: #e8ebf5;
+                --muted: #a2abc2;
+                --line: #2a3250;
+                --accent: #8aa2ff;
+                --accent-ink: #0f1320;
+                --accent-weak: #222b4d;
+                --ok: #5fd68a;
+                --ok-bg: #12301f;
+                --bad: #ff8585;
+                --bad-bg: #3a1a1d;
+                --miss: #ffc266;
+                --miss-bg: #3a2b10;
+                --code-bg: #0b0f1d;
+                --code-fg: #e8ebf7;
+                --code-mute: #8089aa;
+                --code-sel: #2f3c86;
+            }
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", "Noto Sans Georgian", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        code, pre, input.fillin, .code {
+            font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+        }
+
+        code { font-size: .92em; }
+
+        p code, li code, label code, h3 code, .explain code, .ans code {
+            background: var(--accent-weak);
+            color: var(--text);
+            padding: 1px 6px;
+            border-radius: 5px;
+        }
+
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+        /* ---------- ზედა არე ---------- */
+        .top {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 28px 16px 8px;
+        }
+        .top h1 { margin: 0 0 4px; font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.25; }
+        .top p { margin: 0; color: var(--muted); }
+
+        .progress {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+            margin-top: 12px;
+        }
+        .progress-in {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: .92rem;
+        }
+        .progress-in span { white-space: nowrap; font-weight: 600; }
+        .track { flex: 1; height: 10px; background: var(--line); border-radius: 99px; overflow: hidden; }
+        .fillbar { height: 100%; width: 0; background: var(--accent); transition: width .2s; }
+
+        main, footer { max-width: 820px; margin: 0 auto; padding: 0 16px; }
+        main { padding-top: 16px; padding-bottom: 8px; }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+        .card h2 { margin: 0 0 10px; font-size: 1.2rem; }
+
+        /* ---------- ინსტრუქცია ---------- */
+        .types { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
+        .types li { display: flex; gap: 10px; align-items: baseline; }
+        .badge {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 99px;
+            background: var(--accent-weak);
+            color: var(--accent);
+            font-size: .8rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .note { color: var(--muted); margin: 0 0 14px; font-size: .95rem; }
+        .name label { display: block; font-weight: 600; margin-bottom: 4px; }
+        .name input {
+            width: 100%;
+            max-width: 420px;
+            padding: 10px 12px;
+            font: inherit;
+            color: var(--text);
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+        .err { color: var(--bad); margin: 6px 0 0; font-weight: 600; }
+
+        /* ---------- კითხვის ბარათი ---------- */
+        .q { scroll-margin-top: 70px; }
+        .qh { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 8px; font-size: 1rem; }
+        .num {
+            display: inline-grid;
+            place-items: center;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 6px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: var(--accent-ink);
+            font-weight: 700;
+        }
+        .status { margin-left: auto; font-weight: 700; font-size: .9rem; }
+        .q.ok { border-left: 6px solid var(--ok); }
+        .q.bad { border-left: 6px solid var(--bad); }
+        .q.ok .status { color: var(--ok); }
+        .q.bad .status { color: var(--bad); }
+        .qt { margin: 0 0 4px; font-weight: 600; }
+        .hint { margin: 0 0 12px; color: var(--muted); font-size: .88rem; }
+
+        /* არჩევანი */
+        .opts { display: grid; gap: 8px; }
+        .opt {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .opt:hover { border-color: var(--accent); }
+        .opt input { margin-top: 5px; accent-color: var(--accent); }
+        .opt:has(input:checked) { border-color: var(--accent); background: var(--accent-weak); }
+        .opt.ok, .opt.ok:has(input:checked) { border-color: var(--ok); background: var(--ok-bg); }
+        .opt.bad, .opt.bad:has(input:checked) { border-color: var(--bad); background: var(--bad-bg); }
+
+        /* კოდის ბლოკი */
+        .code {
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 10px;
+            padding: 10px 0;
+            margin: 0;
+            overflow-x: auto;
+            font-size: .92rem;
+        }
+        pre.code { padding: 12px 14px; white-space: pre; }
+
+        /* შეცდომის პოვნა */
+        .ln {
+            display: flex;
+            width: 100%;
+            gap: 14px;
+            align-items: baseline;
+            text-align: left;
+            padding: 3px 14px;
+            border: 0;
+            border-left: 4px solid transparent;
+            background: transparent;
+            color: var(--code-fg);
+            font: inherit;
+            cursor: pointer;
+        }
+        .ln code { white-space: pre; font-size: inherit; }
+        .ln .no { color: var(--code-mute); min-width: 1.6em; text-align: right; user-select: none; }
+        .ln:hover:not(:disabled) { background: rgba(255, 255, 255, .08); }
+        .ln[aria-pressed="true"] { background: var(--code-sel); border-left-color: #9fb2ff; }
+        .ln:disabled { cursor: default; color: var(--code-fg); }
+        .ln.ok { background: rgba(70, 200, 120, .28); border-left-color: #46c878; }
+        .ln.bad { background: rgba(255, 100, 100, .30); border-left-color: #ff6464; }
+        .ln.miss { background: rgba(255, 190, 80, .22); border-left-color: #ffbe50; }
+        .fixes { margin: 10px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .92rem; }
+
+        /* თანმიმდევრობა */
+        .order { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+        .ord {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px 6px 10px;
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 8px;
+            border: 2px solid transparent;
+        }
+        .ord[draggable="true"] { cursor: grab; }
+        .ord code { flex: 1; white-space: pre-wrap; word-break: break-word; font-size: .92rem; }
+        .ord .grip { color: var(--code-mute); min-width: 1.4em; text-align: center; user-select: none; letter-spacing: -2px; }
+        .ord.dragging { opacity: .45; }
+        .ord.over { border-color: #9fb2ff; }
+        .ord.ok { border-color: #46c878; }
+        .ord.bad { border-color: #ff6464; }
+        .mini {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, .25);
+            border-radius: 8px;
+            background: transparent;
+            color: var(--code-fg);
+            font-size: 1.05rem;
+            cursor: pointer;
+        }
+        .mini:hover:not(:disabled) { background: rgba(255, 255, 255, .14); }
+        .mini:disabled { opacity: .3; cursor: default; }
+        .correct-order { margin-top: 10px; }
+        .correct-order p { margin: 0 0 4px; font-weight: 600; font-size: .92rem; }
+
+        /* ჩაწერა */
+        .fill { padding: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+        .fill code { white-space: pre-wrap; }
+        input.fillin {
+            width: 9ch;
+            min-width: 7ch;
+            padding: 5px 8px;
+            font-size: 1rem;
+            color: #1c2333;
+            background: #fff;
+            border: 2px solid #9fb2ff;
+            border-radius: 6px;
+        }
+        input.fillin.ok { border-color: #46c878; background: #dff6e8; }
+        input.fillin.bad { border-color: #ff6464; background: #fde4e4; }
+        .ans { margin: 8px 0 0; font-size: .92rem; font-weight: 600; }
+
+        /* შესაბამისობა */
+        .match { display: grid; gap: 8px; }
+        .mrow {
+            display: grid;
+            grid-template-columns: minmax(110px, 170px) 1fr;
+            gap: 8px 12px;
+            align-items: center;
+            padding: 8px 10px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+        }
+        .mrow code { font-weight: 700; }
+        .mrow select {
+            width: 100%;
+            padding: 8px;
+            font: inherit;
+            color: var(--text);
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+        }
+        .mrow .ans { grid-column: 1 / -1; margin: 0; color: var(--bad); }
+        .mrow.ok { border-color: var(--ok); background: var(--ok-bg); }
+        .mrow.bad { border-color: var(--bad); background: var(--bad-bg); }
+
+        /* განმარტება */
+        .explain {
+            margin-top: 14px;
+            padding: 10px 14px;
+            border-radius: 10px;
+            background: var(--accent-weak);
+            font-size: .95rem;
+        }
+        .explain strong { display: block; margin-bottom: 2px; }
+        .explain p { margin: 0; }
+
+        /* ღილაკები */
+        .btn {
+            padding: 11px 22px;
+            font: inherit;
+            font-weight: 700;
+            color: var(--accent-ink);
+            background: var(--accent);
+            border: 0;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .btn:hover { filter: brightness(1.1); }
+        .btn.ghost { background: transparent; color: var(--accent); border: 2px solid var(--accent); }
+        .submit { text-align: center; padding: 8px 0 24px; }
+        .submit .btn { font-size: 1.1rem; padding: 14px 40px; }
+        .submit p { color: var(--muted); margin: 8px 0 0; font-size: .92rem; }
+
+        /* შედეგი */
+        .result { border: 2px solid var(--accent); }
+        .result .who { margin: 0; color: var(--muted); }
+        .score { margin: 6px 0; font-size: 2.6rem; font-weight: 800; line-height: 1.2; }
+        .score small { font-size: 1.2rem; font-weight: 600; color: var(--muted); margin-left: 6px; }
+        .msg { margin: 0 0 12px; font-weight: 600; }
+        .bytype { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+        .bytype li { padding: 4px 12px; border: 1px solid var(--line); border-radius: 99px; font-size: .9rem; }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .actions label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+        .only-wrong .q.ok { display: none; }
+
+        footer { text-align: center; color: var(--muted); font-size: .9rem; padding-bottom: 32px; }
+
+        @media (max-width: 520px) {
+            .card { padding: 14px; }
+            .mrow { grid-template-columns: 1fr; }
+            .progress-in span { font-size: .82rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top">
+        <h1>საშინაო დავალება: HTML შესავალი</h1>
+        <p>ლექცია 4 · 25 კითხვა · თითო სწორი პასუხი = 1 ქულა</p>
+    </header>
+
+    <div class="progress">
+        <div class="progress-in">
+            <span id="progressText">პასუხი გაცემულია: 0 / 25</span>
+            <div class="track" role="progressbar" aria-label="პროგრესი" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0">
+                <div class="fillbar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section class="card">
+            <h2>როგორ შეავსო</h2>
+            <ul class="types">
+                <li><span class="badge">ტესტი</span> აირჩიე ერთი სწორი პასუხი.</li>
+                <li><span class="badge">თანმიმდევრობა</span> დაალაგე კოდის ხაზები სწორ რიგში (გადაათრიე ან გამოიყენე ისრები).</li>
+                <li><span class="badge">იპოვე შეცდომა</span> დააწკაპუნე კოდის იმ ხაზზე, სადაც შეცდომაა.</li>
+                <li><span class="badge">ჩაწერე</span> ჩაწერე ზუსტად ისე, როგორც კოდში იწერება.</li>
+                <li><span class="badge">შესაბამისობა</span> ყოველ ელემენტს აურჩიე შესაბამისი განმარტება.</li>
+            </ul>
+            <p class="note">პასუხები და განმარტებები გამოჩნდება მხოლოდ „შეფასებაზე“ დაჭერის შემდეგ. კითხვებზე პასუხი დაწერე ჯერ ლექციის ფაილის (<code>index.html</code>) გარეშე, მერე შეამოწმე.</p>
+            <div class="name">
+                <label for="studentName">სახელი და გვარი</label>
+                <input type="text" id="studentName" autocomplete="name" placeholder="მაგ: გიორგი გიორგაძე">
+                <p class="err" id="nameErr" hidden>ჯერ ჩაწერე სახელი და გვარი, რომ შედეგი შენზე იყოს დაწერილი.</p>
+            </div>
+        </section>
+
+        <section class="card result" id="result" hidden>
+            <h2>შედეგი</h2>
+            <p class="who" id="resWho"></p>
+            <div class="score"><span id="resScore"></span><small id="resPercent"></small></div>
+            <p class="msg" id="resMsg"></p>
+            <ul class="bytype" id="resTypes"></ul>
+            <div class="actions">
+                <label><input type="checkbox" id="onlyWrong"> მხოლოდ არასწორების ჩვენება</label>
+                <button type="button" class="btn ghost" id="copyBtn">შედეგის კოპირება</button>
+                <button type="button" class="btn" id="retryBtn">თავიდან ცდა</button>
+            </div>
+        </section>
+
+        <div id="quiz"></div>
+
+        <section class="submit" id="submitBox">
+            <button type="button" class="btn" id="submitBtn">შეფასება</button>
+            <p>დააჭირე, როცა ყველა კითხვას უპასუხებ.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>წარმატებები! &copy; 2026</p>
+    </footer>
+
+    <script>
+        /* =====================================================
+           კითხვები
+           type: choice | order | bug | fill | match
+           ტექსტში `ასე` ჩაწერილი ნაწილი კოდად გამოჩნდება
+           ===================================================== */
+        const QUESTIONS = [
+            // 1
+            {
+                type: 'choice',
+                text: 'რას ეუბნება ბრაუზერს `<!DOCTYPE html>`?',
+                options: [
+                    'რომ ეს არის თანამედროვე HTML5 დოკუმენტი',
+                    'რომ გვერდის ენა ქართულია',
+                    'რომ გვერდი ტელეფონზეც კარგად უნდა გამოჩნდეს',
+                    'რომ გვერდის სათაურია „DOCTYPE“'
+                ],
+                answer: 0,
+                explain: 'DOCTYPE ბრაუზერს ეუბნება, რომ დოკუმენტი თანამედროვე HTML5-ია. ენას `lang` ატრიბუტი განსაზღვრავს, ტელეფონზე გამოსახვას კი `viewport`.'
+            },
+            // 2
+            {
+                type: 'order',
+                text: 'დაალაგე HTML გვერდის ჩონჩხი სწორ რიგში (ზევიდან ქვევით).',
+                lines: [
+                    '<!DOCTYPE html>',
+                    '<html lang="ka">',
+                    '  <head>',
+                    '    <title>ჩემი გვერდი</title>',
+                    '  </head>',
+                    '  <body>',
+                    '    <h1>გამარჯობა!</h1>',
+                    '  </body>',
+                    '</html>'
+                ],
+                explain: 'ჯერ `<!DOCTYPE html>`, მერე `<html>`. მის შიგნით ჯერ `<head>` (ეკრანზე არ ჩანს), მერე `<body>` (ეკრანზე ჩანს). თეგები იხურება გახსნის საპირისპირო რიგით.'
+            },
+            // 3
+            {
+                type: 'bug',
+                text: 'რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<head>',
+                    '  <meta charset="UTF-8">',
+                    '  <title>ჩემი გვერდი<title>',
+                    '</head>'
+                ],
+                bugs: [3],
+                fix: { 3: '  <title>ჩემი გვერდი</title>' },
+                explain: 'დახურვის თეგს წინ დახრილი ხაზი სჭირდება: `</title>`.'
+            },
+            // 4
+            {
+                type: 'fill',
+                text: 'ჩაწერე ატრიბუტის მნიშვნელობა, რომ გვერდის ენა ქართული იყოს.',
+                template: '<html lang="{}">',
+                accept: ['ka'],
+                explain: '`ka` არის ქართული ენის კოდი (`en` - ინგლისური). `lang` იწერება გახსნის `<html>` თეგში.'
+            },
+            // 5
+            {
+                type: 'choice',
+                text: 'რისთვის გვჭირდება `<meta charset="UTF-8">`?',
+                options: [
+                    'რომ ქართული ასოები სწორად გამოჩნდეს',
+                    'რომ გვერდს ბრაუზერის ტაბზე სახელი ჰქონდეს',
+                    'რომ ბმულები ახალ ტაბში გაიხსნას',
+                    'რომ გვერდი ტელეფონზეც კარგად გამოჩნდეს'
+                ],
+                answer: 0,
+                explain: '`charset="UTF-8"` ქართული ასოების სწორად გამოსაჩენად გვჭირდება. გვერდის სახელს `<title>` განსაზღვრავს, ბმულის ახალ ტაბში გახსნას - `target="_blank"`, ტელეფონზე გამოსახვას - `viewport`.'
+            },
+            // 6
+            {
+                type: 'bug',
+                text: 'ეს მენიუ უნდა გადაგვიყვანდეს MDN-ის საიტზე. რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<nav>',
+                    '  <a href="#shortcuts">Shortcuts</a> |',
+                    '  <a href="#table">ცხრილი</a> |',
+                    '  <a src="https://developer.mozilla.org/ka/" target="_blank">MDN დოკუმენტაცია</a>',
+                    '</nav>'
+                ],
+                bugs: [4],
+                fix: { 4: '  <a href="https://developer.mozilla.org/ka/" target="_blank">MDN დოკუმენტაცია</a>' },
+                explain: 'ბმულის მისამართი `href` ატრიბუტში იწერება. `src` სურათებისთვის გამოიყენება (`<img src="...">`).'
+            },
+            // 7
+            {
+                type: 'match',
+                text: 'შეუსაბამე თეგი მის დანიშნულებას.',
+                pairs: [
+                    ['<strong>', 'გამუქებული (მნიშვნელოვანი) ტექსტი'],
+                    ['<em>', 'დახრილი ტექსტი'],
+                    ['<kbd>', 'კლავიატურის კლავიშის ჩვენება'],
+                    ['<hr>', 'ჰორიზონტალური გამყოფი ხაზი'],
+                    ['<br>', 'ახალ ხაზზე გადასვლა']
+                ],
+                explain: '`strong` - გამუქება, `em` - დახრა, `kbd` - კლავიში (Ctrl, Tab...), `hr` - გამყოფი ხაზი ბლოკებს შორის, `br` - ახალი ხაზი.'
+            },
+            // 8
+            {
+                type: 'order',
+                text: 'დაალაგე გვერდის ნაწილები ისე, როგორც ეკრანზე ზევიდან ქვევით ჩანს: ზედა არე, მენიუ, მთავარი შინაარსი, ქვედა არე.',
+                lines: [
+                    '<body>',
+                    '  <header>გვერდის ზედა არე</header>',
+                    '  <nav>ბმულების მენიუ</nav>',
+                    '  <main>მთავარი შინაარსი</main>',
+                    '  <footer>გვერდის ქვედა არე</footer>',
+                    '</body>'
+                ],
+                explain: 'ყველა ეს ნაწილი `<body>`-ის შიგნითაა: `header` (ზედა), `nav` (მენიუ), `main` (მთავარი შინაარსი), `footer` (ქვედა).'
+            },
+            // 9
+            {
+                type: 'choice',
+                text: 'რას აკეთებს `target="_blank"` ბმულში?',
+                options: [
+                    'ბმულს ახალ ტაბში ხსნის',
+                    'ბმულის ტექსტს ამუქებს',
+                    'ბმულს გვერდის ქვედა ნაწილში გადაჰყავს',
+                    'ბმულს გამორთავს'
+                ],
+                answer: 0,
+                explain: '`target="_blank"` ბმულს ახალ ტაბში ხსნის. `#shortcuts` ტიპის ბმული კი გვერდის შიგნით გადაგვიყვანს იმ ელემენტთან, რომელსაც ეს `id` აქვს.'
+            },
+            // 10
+            {
+                type: 'bug',
+                text: 'ეს უნდა იყოს სწორი სია. რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<ul>',
+                    '  <li>Ctrl + C - კოპირება</li>',
+                    '  <li>Ctrl + V - ჩასმა</li>',
+                    '  <p>Ctrl + S - შენახვა</p>',
+                    '</ul>'
+                ],
+                bugs: [4],
+                fix: { 4: '  <li>Ctrl + S - შენახვა</li>' },
+                explain: '`<ul>`-ის შიგნით პუნქტები `<li>` თეგში იწერება. აბზაცი `<p>` სიაში არ უნდა იყოს.'
+            },
+            // 11
+            {
+                type: 'fill',
+                text: 'VS Code-ში ჩაწერე ერთი სიმბოლო და დააჭირე Tab-ს, რომ HTML-ის საწყისი ბლანკი (Emmet) ავტომატურად ჩაიწეროს. რა სიმბოლოა ეს?',
+                template: '{} + Tab',
+                accept: ['!'],
+                explain: '`!` + `Tab` ჩაწერს DOCTYPE-სა და მთელ HTML ჩონჩხს. `!` კლავიატურაზე `Shift` + `1`-ია.'
+            },
+            // 12
+            {
+                type: 'choice',
+                text: 'რისთვის არის `alt` ატრიბუტი `<img>` თეგში?',
+                options: [
+                    'სურათის ტექსტური აღწერა, თუ სურათი ვერ ჩაიტვირთა',
+                    'სურათის მისამართი (ბმული)',
+                    'სურათის სიგანე',
+                    'სურათის გადაადგილება გვერდზე'
+                ],
+                answer: 0,
+                explain: '`alt` სურათის ტექსტური აღწერაა - ჩანს, თუ სურათი ვერ ჩაიტვირთა, და ეკრანის წამკითხველებიც ამას კითხულობენ. მისამართი `src`-ში იწერება.'
+            },
+            // 13
+            {
+                type: 'order',
+                text: 'დაალაგე ცხრილის კოდი: ჯერ სათაურის სტრიქონი (`th`), მერე მონაცემების სტრიქონი (`td`). უჯრები მარცხნიდან მარჯვნივ იწერება.',
+                lines: [
+                    '<table>',
+                    '  <tr>',
+                    '    <th>თეგი</th>',
+                    '    <th>რისთვის გამოიყენება</th>',
+                    '  </tr>',
+                    '  <tr>',
+                    '    <td>&lt;p&gt;</td>',
+                    '    <td>აბზაცი</td>',
+                    '  </tr>',
+                    '</table>'
+                ],
+                explain: 'ცხრილი `<table>` → სტრიქონი `<tr>` → უჯრები. სათაურის უჯრას `<th>` ჰქვია, ჩვეულებრივს - `<td>`.'
+            },
+            // 14
+            {
+                type: 'bug',
+                text: 'რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<table>',
+                    '  <tr>',
+                    '    <th>თეგი</td>',
+                    '    <th>რისთვის გამოიყენება</th>',
+                    '  </tr>',
+                    '  <tr>',
+                    '    <td>&lt;h1&gt;</td>',
+                    '    <td>სათაური</td>',
+                    '  </tr>',
+                    '</table>'
+                ],
+                bugs: [3],
+                fix: { 3: '    <th>თეგი</th>' },
+                explain: '`<th>` უნდა დაიხუროს `</th>`-ით და არა `</td>`-ით - გახსნისა და დახურვის თეგი ერთმანეთს უნდა ემთხვეოდეს.'
+            },
+            // 15
+            {
+                type: 'choice',
+                text: 'რა განსხვავებაა `<div>` და `<span>` შორის?',
+                options: [
+                    '`div` ელემენტების დასაჯგუფებელი უსახო კონტეინერია; `span` ტექსტის პატარა ნაწილის მოსანიშნად, ხაზის შიგნით',
+                    '`div` სათაურია, `span` - ცხრილი',
+                    '`div` ბმულია, `span` - სურათი',
+                    'არანაირი განსხვავება არ არის'
+                ],
+                answer: 0,
+                explain: '`div` - უსახო კონტეინერი ელემენტების დასაჯგუფებლად (ახალ ხაზზე იწყება); `span` - ტექსტის პატარა ნაწილის მოსანიშნად, ხაზის შიგნით.'
+            },
+            // 16
+            {
+                type: 'bug',
+                text: 'ცხრილში უნდა გამოჩნდეს თეგების სახელები: `<h1>`, `<p>`, `<a>`. რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<table>',
+                    '  <tr>',
+                    '    <td>&lt;h1&gt;</td>',
+                    '    <td><p></td>',
+                    '    <td>&lt;a&gt;</td>',
+                    '  </tr>',
+                    '</table>'
+                ],
+                bugs: [4],
+                fix: { 4: '    <td>&lt;p&gt;</td>' },
+                explain: 'ბრაუზერი `<p>`-ს თეგად აღიქვამს და ტექსტად არ აჩვენებს. სიმბოლოები `<` და `>` უნდა დაიწეროს `&lt;` და `&gt;` სახით.'
+            },
+            // 17
+            {
+                type: 'match',
+                text: 'შეუსაბამე VS Code-ის shortcut მის მოქმედებას.',
+                pairs: [
+                    ['Ctrl + S', 'ფაილის შენახვა'],
+                    ['Ctrl + Z', 'ბოლო ქმედების გაუქმება (undo)'],
+                    ['Ctrl + /', 'ხაზის დაკომენტარება'],
+                    ['Ctrl + Shift + K', 'ხაზის წაშლა'],
+                    ['F12', 'ბრაუზერის DevTools']
+                ],
+                explain: 'ხშირად დააჭირე `Ctrl + S`-ს! `Ctrl + /` ხაზს აკომენტარებს, `F12` კი ბრაუზერში DevTools-ს ხსნის.'
+            },
+            // 18
+            {
+                type: 'order',
+                text: 'დაალაგე ფორმა: ჯერ წარწერა (`label`), მერე შესაყვანი ველი (`input`), ბოლოს ღილაკი (`button`).',
+                lines: [
+                    '<form>',
+                    '  <label for="name">შენი სახელი:</label>',
+                    '  <input type="text" id="name">',
+                    '  <button type="submit">გაგზავნა</button>',
+                    '</form>'
+                ],
+                explain: '`label` ველის წარწერაა, `input` - შესაყვანი ველი, `button` - გაგზავნის ღილაკი. ყველაფერი `<form>`-ის შიგნითაა.'
+            },
+            // 19
+            {
+                type: 'choice',
+                text: '`<label for="name">` სწორად რომ იმუშაოს, რას უნდა ემთხვეოდეს `for`-ის მნიშვნელობა?',
+                options: [
+                    'input-ის `id`-ს',
+                    'input-ის `placeholder`-ს',
+                    'form-ის სახელს',
+                    'გვერდის `title`-ს'
+                ],
+                answer: 0,
+                explain: '`for` უნდა ემთხვეოდეს input-ის `id`-ს (`<label for="name">` ↔ `<input id="name">`). მაშინ წარწერაზე დაწკაპუნება ველს გააქტიურებს.'
+            },
+            // 20
+            {
+                type: 'bug',
+                text: 'რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<form>',
+                    '  <label for="name">შენი სახელი:</label>',
+                    '  <input type="text id="name" placeholder="მაგ: გიორგი">',
+                    '  <button type="submit">გაგზავნა</button>',
+                    '</form>'
+                ],
+                bugs: [3],
+                fix: { 3: '  <input type="text" id="name" placeholder="მაგ: გიორგი">' },
+                explain: 'ატრიბუტის მნიშვნელობა ორ ბრჭყალს შორის იწერება: `type="text"`. აქ `text`-ის შემდეგ დახურვის ბრჭყალი ეკლია.'
+            },
+            // 21
+            {
+                type: 'fill',
+                text: 'რა უნდა ჩაწერო HTML-ში, რომ გვერდზე © სიმბოლო გამოჩნდეს?',
+                template: '<p>გვერდი შექმნილია HTML-ის შესასწავლად {} 2026</p>',
+                accept: ['&copy;'],
+                explain: '`&copy;` გვერდზე © სიმბოლოს აჩვენებს. `&lt;` და `&gt;` კი `<`-ისა და `>`-ის სიმბოლოებია.'
+            },
+            // 22
+            {
+                type: 'order',
+                text: 'დაალაგე ნაბიჯები: როგორ ვიწყებთ ახალ HTML გვერდს ლექციის მიხედვით.',
+                lines: [
+                    'შექმენი ახალი საქაღალდე',
+                    'გადაათრიე საქაღალდე VS Code-ში',
+                    'შექმენი ფაილი index.html (Ctrl + N, მერე Ctrl + S)',
+                    'ჩაწერე ! და დააჭირე Tab-ს',
+                    'შეინახე (Ctrl + S) და გახსენი index.html ბრაუზერში'
+                ],
+                explain: 'ჯერ საქაღალდე და ფაილი, მერე `!` + `Tab` HTML ჩონჩხისთვის, ბოლოს შენახვა (`Ctrl + S`) და ბრაუზერში გახსნა. ცვლილების შემდეგ `F5` გვერდს ანახლებს.'
+            },
+            // 23
+            {
+                type: 'choice',
+                text: 'სწორი პრაქტიკით, რამდენი `<h1>` უნდა იყოს ერთ გვერდზე?',
+                options: [
+                    'ერთი - მთავარი სათაური',
+                    'ზუსტად ექვსი',
+                    'რამდენიც გვინდა',
+                    'არცერთი - `h1` მოძველებულია'
+                ],
+                answer: 0,
+                explain: 'გვერდზე ერთი `<h1>` უნდა იყოს - მთავარი სათაური. ქვესათაურებისთვის `h2`-დან `h6`-მდე გამოიყენება.'
+            },
+            // 24
+            {
+                type: 'bug',
+                text: 'რომელ ხაზშია შეცდომა?',
+                code: [
+                    '<section>',
+                    '  <h2>ჩემი კატა</h2>',
+                    '  <img src="cat.png" alt="კატა" width="300">',
+                    '  </img>',
+                    '</section>'
+                ],
+                bugs: [4],
+                fix: { 4: 'წაშალე ეს ხაზი' },
+                explain: '`<img>`-ს დახურვის თეგი არ სჭირდება - ის ცალკე თეგია, ისევე როგორც `<br>` და `<hr>`.'
+            },
+            // 25
+            {
+                type: 'bug',
+                text: 'ამ გვერდზე ორი შეცდომაა. მონიშნე ორივე ხაზი.',
+                code: [
+                    '<!DOCTYPE html>',
+                    '<html lang="ka">',
+                    '<head>',
+                    '  <meta charset="UTF-8">',
+                    '  <title>ჩემი გვერდი</title>',
+                    '</head>',
+                    '<body>',
+                    '  <h1>მთავარი სათაური',
+                    '  <p>ეს არის <strong>მნიშვნელოვანი</em> ტექსტი.</p>',
+                    '</body>',
+                    '</html>'
+                ],
+                bugs: [8, 9],
+                fix: {
+                    8: '  <h1>მთავარი სათაური</h1>',
+                    9: '  <p>ეს არის <strong>მნიშვნელოვანი</strong> ტექსტი.</p>'
+                },
+                explain: 'ხაზი 8: `<h1>` არ არის დახურული. ხაზი 9: `<strong>` უნდა დაიხუროს `</strong>`-ით და არა `</em>`-ით.'
+            }
+        ];
+
+        /* =====================================================
+           დამხმარე ფუნქციები
+           ===================================================== */
+        const TYPE_LABEL = {
+            choice: 'ტესტი',
+            order: 'თანმიმდევრობა',
+            bug: 'იპოვე შეცდომა',
+            fill: 'ჩაწერე',
+            match: 'შესაბამისობა'
+        };
+
+        function h(tag, props, ...kids) {
+            const e = document.createElement(tag);
+            for (const [k, v] of Object.entries(props || {})) {
+                if (k === 'class') e.className = v;
+                else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+                else if (v === true) e.setAttribute(k, '');
+                else if (v !== false && v != null) e.setAttribute(k, v);
+            }
+            for (const kid of kids.flat()) if (kid != null && kid !== false) e.append(kid);
+            return e;
+        }
+
+        // `ასე` ჩაწერილ ნაწილს <code>-ად აქცევს (უსაფრთხოდ, textContent-ით)
+        function rich(text) {
+            return text.split('`').map((part, i) => (i % 2 ? h('code', {}, part) : part));
+        }
+
+        function shuffle(arr) {
+            const a = arr.slice();
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        const sameList = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
+        const normalize = s => s.trim().toLowerCase().replace(/\s+/g, '').replace(/^["']|["']$/g, '');
+
+        // ორდერის კითხვებში ჩაღრმავებას არ ვითვალისწინებთ
+        QUESTIONS.forEach(q => { if (q.type === 'order') q.correct = q.lines.map(l => l.trim()); });
+
+        /* =====================================================
+           მდგომარეობა და შეფასება
+           ===================================================== */
+        function initState(q) {
+            switch (q.type) {
+                case 'choice': return { sel: null, order: shuffle(q.options.map((_, i) => i)) };
+                case 'order': {
+                    let items;
+                    do { items = shuffle(q.correct); } while (sameList(items, q.correct));
+                    return { items, touched: false };
+                }
+                case 'bug': return { sel: new Set() };
+                case 'fill': return { val: '' };
+                case 'match': return { sel: q.pairs.map(() => ''), opts: shuffle(q.pairs.map(p => p[1])) };
+            }
+        }
+
+        let S = QUESTIONS.map(initState);
+        let submitted = false;
+
+        function isAnswered(q, st) {
+            switch (q.type) {
+                case 'choice': return st.sel !== null;
+                case 'order': return st.touched;
+                case 'bug': return st.sel.size > 0;
+                case 'fill': return st.val.trim() !== '';
+                case 'match': return st.sel.every(Boolean);
+            }
+        }
+
+        function isCorrect(q, st) {
+            switch (q.type) {
+                case 'choice': return st.sel === q.answer;
+                case 'order': return sameList(st.items, q.correct);
+                case 'bug': return st.sel.size === q.bugs.length && q.bugs.every(n => st.sel.has(n));
+                case 'fill': return q.accept.map(normalize).includes(normalize(st.val));
+                case 'match': return q.pairs.every((p, i) => st.sel[i] === p[1]);
+            }
+        }
+
+        function updateProgress() {
+            const n = QUESTIONS.filter((q, i) => isAnswered(q, S[i])).length;
+            document.getElementById('progressText').textContent = `პასუხი გაცემულია: ${n} / ${QUESTIONS.length}`;
+            document.getElementById('progressBar').style.width = (n / QUESTIONS.length * 100) + '%';
+            document.querySelector('.track').setAttribute('aria-valuenow', n);
+        }
+
+        /* =====================================================
+           კითხვის ტიპების გამოსახვა (review = შეფასების შემდეგ)
+           ===================================================== */
+        function widgetChoice(q, st, qi, review) {
+            const wrap = h('div', { class: 'opts', role: 'radiogroup' });
+            st.order.forEach(oi => {
+                const input = h('input', { type: 'radio', name: 'q' + qi, disabled: review });
+                input.checked = st.sel === oi;
+                input.addEventListener('change', () => { st.sel = oi; updateProgress(); });
+                let cls = 'opt';
+                if (review) {
+                    if (oi === q.answer) cls += ' ok';
+                    else if (st.sel === oi) cls += ' bad';
+                }
+                wrap.append(h('label', { class: cls }, input, h('span', {}, rich(q.options[oi]))));
+            });
+            return wrap;
+        }
+
+        function widgetOrder(q, st, qi, review) {
+            const root = h('div');
+            const list = h('ul', { class: 'order' });
+            root.append(list);
+            let dragFrom = null;
+
+            function move(from, to) {
+                if (to < 0 || to >= st.items.length || from === to) return;
+                const [x] = st.items.splice(from, 1);
+                st.items.splice(to, 0, x);
+                st.touched = true;
+                paint({ idx: to, dir: to < from ? 'up' : 'down' });
+                updateProgress();
+            }
+
+            function paint(focus) {
+                list.textContent = '';
+                st.items.forEach((text, idx) => {
+                    let cls = 'ord';
+                    if (review) cls += text === q.correct[idx] ? ' ok' : ' bad';
+                    const li = h('li', { class: cls, draggable: !review });
+                    li.append(
+                        h('span', { class: 'grip', 'aria-hidden': 'true' }, review ? String(idx + 1) : '⋮⋮'),
+                        h('code', {}, text)
+                    );
+                    if (!review) {
+                        li.append(
+                            h('button', { type: 'button', class: 'mini up', 'aria-label': 'ზევით აწევა', disabled: idx === 0, onclick: () => move(idx, idx - 1) }, '↑'),
+                            h('button', { type: 'button', class: 'mini down', 'aria-label': 'ქვევით ჩამოწევა', disabled: idx === st.items.length - 1, onclick: () => move(idx, idx + 1) }, '↓')
+                        );
+                        li.addEventListener('dragstart', e => {
+                            dragFrom = idx;
+                            li.classList.add('dragging');
+                            e.dataTransfer.effectAllowed = 'move';
+                            e.dataTransfer.setData('text/plain', String(idx));
+                        });
+                        li.addEventListener('dragend', () => {
+                            li.classList.remove('dragging');
+                            list.querySelectorAll('.over').forEach(x => x.classList.remove('over'));
+                        });
+                        li.addEventListener('dragover', e => { e.preventDefault(); li.classList.add('over'); });
+                        li.addEventListener('dragleave', () => li.classList.remove('over'));
+                        li.addEventListener('drop', e => {
+                            e.preventDefault();
+                            if (dragFrom !== null) move(dragFrom, idx);
+                            dragFrom = null;
+                        });
+                    }
+                    list.append(li);
+                });
+                if (focus) {
+                    const li = list.children[focus.idx];
+                    const first = li.querySelector('.' + focus.dir);
+                    (first && !first.disabled ? first : li.querySelector('.mini:not(:disabled)')).focus();
+                }
+            }
+
+            paint();
+            if (review) {
+                root.append(h('div', { class: 'correct-order' },
+                    h('p', {}, 'სწორი რიგი:'),
+                    h('pre', { class: 'code' }, q.lines.join('\n'))
+                ));
+            }
+            return root;
+        }
+
+        function widgetBug(q, st, qi, review) {
+            const root = h('div');
+            const box = h('div', { class: 'code' });
+            q.code.forEach((line, k) => {
+                const n = k + 1;
+                const b = h('button', { type: 'button', class: 'ln', 'aria-pressed': String(st.sel.has(n)), disabled: review },
+                    h('span', { class: 'no' }, String(n)),
+                    h('code', {}, line || ' ')
+                );
+                if (review) {
+                    const isBug = q.bugs.includes(n), picked = st.sel.has(n);
+                    if (isBug && picked) b.classList.add('ok');
+                    else if (picked) b.classList.add('bad');
+                    else if (isBug) b.classList.add('miss');
+                } else {
+                    b.addEventListener('click', () => {
+                        if (st.sel.has(n)) st.sel.delete(n); else st.sel.add(n);
+                        b.setAttribute('aria-pressed', String(st.sel.has(n)));
+                        updateProgress();
+                    });
+                }
+                box.append(b);
+            });
+            root.append(box);
+            if (review) {
+                root.append(h('ul', { class: 'fixes' }, q.bugs.map(n =>
+                    h('li', {}, `სწორი ვერსია, ხაზი ${n}: `, h('code', {}, q.fix[n].trim()))
+                )));
+            }
+            return root;
+        }
+
+        function widgetFill(q, st, qi, review) {
+            const [before, after] = q.template.split('{}');
+            const input = h('input', { type: 'text', class: 'fillin', autocomplete: 'off', spellcheck: 'false', maxlength: '20', 'aria-label': 'შენი პასუხი', disabled: review });
+            input.value = st.val;
+            if (review) input.classList.add(isCorrect(q, st) ? 'ok' : 'bad');
+            input.addEventListener('input', () => { st.val = input.value; updateProgress(); });
+            const root = h('div');
+            root.append(h('div', { class: 'code fill' }, h('code', {}, before), input, h('code', {}, after)));
+            if (review && !isCorrect(q, st)) {
+                root.append(h('p', { class: 'ans' }, 'სწორი პასუხი: ', h('code', {}, q.accept[0])));
+            }
+            return root;
+        }
+
+        function widgetMatch(q, st, qi, review) {
+            const box = h('div', { class: 'match' });
+            q.pairs.forEach(([left, right], k) => {
+                const sel = h('select', { 'aria-label': left + ' - შესაბამისობა', disabled: review });
+                sel.append(h('option', { value: '' }, '- აირჩიე -'));
+                st.opts.forEach(o => {
+                    const op = h('option', { value: o }, o);
+                    if (st.sel[k] === o) op.selected = true;
+                    sel.append(op);
+                });
+                sel.addEventListener('change', () => { st.sel[k] = sel.value; updateProgress(); });
+                const ok = st.sel[k] === right;
+                box.append(h('div', { class: 'mrow' + (review ? (ok ? ' ok' : ' bad') : '') },
+                    h('code', {}, left),
+                    sel,
+                    review && !ok ? h('span', { class: 'ans' }, 'სწორია: ' + right) : null
+                ));
+            });
+            return box;
+        }
+
+        const WIDGETS = { choice: widgetChoice, order: widgetOrder, bug: widgetBug, fill: widgetFill, match: widgetMatch };
+
+        function hintFor(q) {
+            switch (q.type) {
+                case 'choice': return 'აირჩიე ერთი სწორი პასუხი.';
+                case 'order': return 'გადაათრიე ხაზები ან გამოიყენე ისრები ↑ ↓. ჩაღრმავებას (ხაზის წინ დაშორებას) ყურადღება არ მიაქციო.';
+                case 'bug': return q.bugs.length === 1
+                    ? 'დააწკაპუნე შეცდომიან ხაზზე (ხელახალი დაწკაპუნებით მონიშვნა მოიხსნება).'
+                    : `ამ კოდში ${q.bugs.length} შეცდომიანი ხაზია - დააწკაპუნე ორივეზე.`;
+                case 'fill': return 'ჩაწერე ზუსტად ისე, როგორც კოდში იწერება.';
+                case 'match': return 'ყოველ მარცხენა ელემენტს აირჩიე შესაბამისი განმარტება.';
+            }
+        }
+
+        function renderQuestion(q, i, review) {
+            const st = S[i];
+            const ok = review && isCorrect(q, st);
+            const card = h('article', { class: 'card q' + (review ? (ok ? ' ok' : ' bad') : ''), id: 'q' + (i + 1) });
+            card.append(h('h3', { class: 'qh' },
+                h('span', { class: 'num' }, String(i + 1)),
+                h('span', { class: 'badge' }, TYPE_LABEL[q.type]),
+                review ? h('span', { class: 'status' }, ok ? '✔ სწორია' : '✘ არასწორია') : null
+            ));
+            card.append(h('p', { class: 'qt' }, rich(q.text)));
+            if (!review) card.append(h('p', { class: 'hint' }, hintFor(q)));
+            card.append(WIDGETS[q.type](q, st, i, review));
+            if (review) {
+                card.append(h('div', { class: 'explain' }, h('strong', {}, 'განმარტება'), h('p', {}, rich(q.explain))));
+            }
+            return card;
+        }
+
+        function renderAll(review) {
+            const quiz = document.getElementById('quiz');
+            quiz.textContent = '';
+            QUESTIONS.forEach((q, i) => quiz.append(renderQuestion(q, i, review)));
+        }
+
+        /* =====================================================
+           შეფასება, შედეგი, თავიდან ცდა
+           ===================================================== */
+        let lastReport = '';
+
+        function submit() {
+            const nameInput = document.getElementById('studentName');
+            const name = nameInput.value.trim();
+            if (!name) {
+                document.getElementById('nameErr').hidden = false;
+                nameInput.focus();
+                nameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            document.getElementById('nameErr').hidden = true;
+
+            const unanswered = QUESTIONS.filter((q, i) => !isAnswered(q, S[i])).length;
+            if (unanswered && !confirm(`უპასუხო კითხვებია: ${unanswered}. მაინც გსურს შეფასება?`)) return;
+
+            submitted = true;
+            let score = 0;
+            const byType = {};
+            QUESTIONS.forEach((q, i) => {
+                const ok = isCorrect(q, S[i]);
+                if (ok) score++;
+                byType[q.type] = byType[q.type] || { ok: 0, total: 0 };
+                byType[q.type].total++;
+                if (ok) byType[q.type].ok++;
+            });
+
+            const total = QUESTIONS.length;
+            const pct = Math.round(score / total * 100);
+            const now = new Date();
+            const date = [now.getDate(), now.getMonth() + 1].map(n => String(n).padStart(2, '0')).concat(now.getFullYear()).join('.');
+            let msg;
+            if (score >= 23) msg = 'შესანიშნავი შედეგია! HTML-ის საფუძვლები კარგად გაქვს ათვისებული.';
+            else if (score >= 18) msg = 'კარგი შედეგია! გადახედე არასწორ კითხვებს და სცადე ხელახლა.';
+            else if (score >= 13) msg = 'საშუალო შედეგია. გადახედე ლექციის index.html ფაილს და სცადე ხელახლა.';
+            else msg = 'კარგად გადახედე ლექციის მასალას (index.html) და სცადე ხელახლა - აუცილებლად გამოგივა!';
+
+            document.getElementById('resWho').textContent = `${name} · ${date}`;
+            document.getElementById('resScore').textContent = `${score} / ${total}`;
+            document.getElementById('resPercent').textContent = `${pct}%`;
+            document.getElementById('resMsg').textContent = msg;
+            const typesEl = document.getElementById('resTypes');
+            typesEl.textContent = '';
+            const typeLines = [];
+            Object.keys(TYPE_LABEL).forEach(t => {
+                if (!byType[t]) return;
+                typesEl.append(h('li', {}, `${TYPE_LABEL[t]}: ${byType[t].ok} / ${byType[t].total}`));
+                typeLines.push(`${TYPE_LABEL[t]}: ${byType[t].ok}/${byType[t].total}`);
+            });
+            lastReport = `HTML საშინაო დავალება\n${name}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\n${date}`;
+
+            document.getElementById('result').hidden = false;
+            document.getElementById('submitBox').hidden = true;
+            document.querySelector('.progress').hidden = true;
+            renderAll(true);
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function retry() {
+            S = QUESTIONS.map(initState);
+            submitted = false;
+            document.getElementById('result').hidden = true;
+            document.getElementById('submitBox').hidden = false;
+            document.querySelector('.progress').hidden = false;
+            document.getElementById('onlyWrong').checked = false;
+            document.body.classList.remove('only-wrong');
+            renderAll(false);
+            updateProgress();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function copyReport() {
+            const btn = document.getElementById('copyBtn');
+            let done = false;
+            try {
+                await navigator.clipboard.writeText(lastReport);
+                done = true;
+            } catch (err) {
+                const ta = h('textarea', { 'aria-hidden': 'true' });
+                ta.value = lastReport;
+                ta.style.cssText = 'position:fixed;opacity:0;';
+                document.body.append(ta);
+                ta.select();
+                try { done = document.execCommand('copy'); } catch (e2) { done = false; }
+                ta.remove();
+            }
+            btn.textContent = done ? 'დაკოპირდა ✔' : 'ვერ დაკოპირდა - გადაიღე სურათი';
+            setTimeout(() => { btn.textContent = 'შედეგის კოპირება'; }, 2500);
+        }
+
+        document.getElementById('submitBtn').addEventListener('click', submit);
+        document.getElementById('retryBtn').addEventListener('click', retry);
+        document.getElementById('copyBtn').addEventListener('click', copyReport);
+        document.getElementById('onlyWrong').addEventListener('change', e => {
+            document.body.classList.toggle('only-wrong', e.target.checked);
+        });
+        window.addEventListener('beforeunload', e => {
+            if (!submitted && QUESTIONS.some((q, i) => isAnswered(q, S[i]))) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        renderAll(false);
+        updateProgress();
+    </script>
+</body>
+
+</html>
