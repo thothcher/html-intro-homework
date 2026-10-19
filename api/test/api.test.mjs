@@ -32,7 +32,7 @@ test('meta lists lecturers and quizzes without needing a code', async () => {
   const { status, data } = await call('GET', '/api/meta');
   assert.equal(status, 200);
   assert.ok(data.lecturers.length >= 6);
-  assert.ok(data.lecturers.some(l => l.name === 'Lana Steen'));
+  assert.ok(data.lecturers.some(l => l.name === 'ლანა სტინი'));
   assert.equal(data.quizzes[0].id, QUIZ);
   assert.equal(data.configured, true);
 });
