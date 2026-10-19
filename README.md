@@ -35,7 +35,7 @@ API address: `https://homework-api.homework-api.workers.dev`
 | Change a question | Edit `student/questions.js`, then `git add -A && git commit -m "..." && git push`. GitHub Pages updates in about a minute. |
 | Add or remove a lecturer | Edit the list in `api/src/config.js`, then `cd api && npx wrangler deploy`. Removed lecturers disappear from the dropdowns; their students' results are kept. |
 | Change the access code | `cd api && npx wrangler secret put LECTURER_CODE` (lecturers are asked to log in again) |
-| Let a student retake the test | Lecturers' dashboard → open the student's row → **ცდის გასუფთავება** |
+| Delete a result / let a student retake the test | Lecturers' dashboard → click the trash icon at the end of the student's row and confirm. The student can then take the test again. |
 | Export results | Lecturers' dashboard → **CSV** (opens in Excel; follows the selected group) |
 | Back up everything | `cd api && npx wrangler d1 export homework-db --remote --output backup.sql` |
 | Start a new semester | `cd api && npx wrangler d1 execute homework-db --remote --command "DELETE FROM results"` |

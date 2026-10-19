@@ -93,14 +93,16 @@ async function requireLecturer(request, env) {
   if (!(await safeEqual(given, String(env.LECTURER_CODE)))) throw new HttpError(401, 'bad_code');
 }
 
-const GROUPS_WITH_RESULTS = 'SELECT key, label FROM groups g WHERE EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key) ORDER BY label';
+const GROUPS_WITH_RESULTS = 'SELECT key, label, archived FROM groups g WHERE EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key) ORDER BY label';
+// სტუდენტებს არქივის ჯგუფები (მაგ. ძველი ბაზიდან გადმოტანილი შედეგები) არ ვაჩვენებთ
+const GROUPS_FOR_STUDENTS = 'SELECT key, label FROM groups g WHERE g.archived = 0 AND EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key) ORDER BY label';
 
 /* ---------- საჯარო: სტუდენტის გვერდი ---------- */
 
 async function meta(env) {
   const [lecturers, groups] = await env.DB.batch([
     env.DB.prepare('SELECT id, name FROM lecturers WHERE active = 1 ORDER BY sort'),
-    env.DB.prepare(GROUPS_WITH_RESULTS)
+    env.DB.prepare(GROUPS_FOR_STUDENTS)
   ]);
   return json({
     configured: Boolean(env.LECTURER_CODE),
@@ -167,7 +169,7 @@ async function results(request, env) {
   return json({
     quizzes: Object.entries(QUIZZES).map(([id, q]) => ({ id, ...q })),
     lecturers: lecturers.results.map(l => ({ id: l.id, name: l.name, active: Boolean(l.active) })),
-    groups: groups.results,
+    groups: groups.results.map(g => ({ key: g.key, label: g.label, archived: Boolean(g.archived) })),
     results: rows.results.map(r => ({
       id: r.id, quiz: r.quiz, name: r.name, lecturer: r.lecturer_id, group: r.group_key,
       point: r.point, max: r.max_point, time: r.seconds, detail: r.detail, at: r.created_at

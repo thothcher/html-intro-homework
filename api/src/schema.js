@@ -11,7 +11,8 @@ const TABLES = [
   `CREATE TABLE IF NOT EXISTS groups (
     key        TEXT PRIMARY KEY,
     label      TEXT NOT NULL,
-    created_at TEXT NOT NULL
+    created_at TEXT NOT NULL,
+    archived   INTEGER NOT NULL DEFAULT 0
   )`,
   `CREATE TABLE IF NOT EXISTS results (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,4 +46,10 @@ async function init(db) {
       db.prepare('INSERT INTO lecturers (name, sort, active) VALUES (?, ?, 1) ON CONFLICT(name) DO UPDATE SET sort = excluded.sort, active = 1').bind(name, i)),
     db.prepare(`UPDATE lecturers SET active = 0 WHERE name NOT IN (${marks})`).bind(...LECTURERS)
   ]);
+
+  // უკვე არსებულ ბაზას "archived" სვეტი ემატება (დაარქივებული ჯგუფი სტუდენტებს ჯგუფების ჩამონათვალში არ ეჩვენებათ)
+  const cols = await db.prepare('PRAGMA table_info(groups)').all();
+  if (!cols.results.some(c => c.name === 'archived')) {
+    await db.prepare('ALTER TABLE groups ADD COLUMN archived INTEGER NOT NULL DEFAULT 0').run();
+  }
 }

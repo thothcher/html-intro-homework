@@ -30,6 +30,25 @@ function figure(img, cls) {
         img.caption ? h('figcaption', {}, img.caption) : null);
 }
 
+// ფანჯარა confirm()-ის ნაცვლად. ask({ title, text, ok, cancel }) -> Promise<boolean>
+function ask({ title, text, ok = 'კარგი', cancel = '' }) {
+    return new Promise(resolve => {
+        const dlg = h('dialog', { class: 'modal', 'aria-labelledby': 'dlgTitle', 'aria-describedby': 'dlgText' });
+        const finish = value => { dlg.close(); dlg.remove(); resolve(value); };
+        const yes = h('button', { type: 'button', class: 'btn modal-ok', onclick: () => finish(true) }, ok);
+        const no = cancel ? h('button', { type: 'button', class: 'btn ghost modal-cancel', onclick: () => finish(false) }, cancel) : null;
+        dlg.append(h('div', { class: 'modal-in' },
+            h('h3', { id: 'dlgTitle' }, title),
+            h('p', { id: 'dlgText' }, text),
+            h('div', { class: 'modal-actions' }, no, yes)));
+        dlg.addEventListener('cancel', e => { e.preventDefault(); finish(false); });     // Esc
+        dlg.addEventListener('click', e => { if (e.target === dlg) finish(false); });      // დაწკაპუნება ფანჯრის გარეთ
+        document.body.append(dlg);
+        dlg.showModal();
+        (no || yes).focus();                  // შემთხვევითი დაჭერისგან დასაცავად ფოკუსი „უკან დაბრუნებაზეა“
+    });
+}
+
 /* HTML კოდის ფერადი გამოყოფა VS Code-ის მსგავსად: თეგი, ატრიბუტი, მნიშვნელობა, კომენტარი, სიმბოლო (&lt;).
    ბრაუზერის DOM-ით ვაგებთ (არა innerHTML-ით), ამიტომ ტექსტი ყოველთვის უსაფრთხოა.
    opts.slot - ელემენტი (მაგ. input), რომელიც ჩაჯდება ტექსტში `{}`-ის ადგილას. */
@@ -561,10 +580,17 @@ async function sendAndShow(payload) {
     }
 }
 
-function submit() {
+async function submit() {
     if (phase !== 'taking' || !me) return;
     const unanswered = QUESTIONS.filter((q, i) => !isAnswered(q, S[i])).length;
-    if (unanswered && !confirm(`უპასუხო კითხვებია: ${unanswered}. მაინც გსურს შეფასება?`)) return;
+    // ტესტის გავლა მხოლოდ ერთხელ შეიძლება, ამიტომ შეფასებამდე ყოველთვის ვეკითხებით
+    const go = await ask({
+        title: unanswered ? 'ყველა კითხვას ვერ უპასუხე' : 'დარწმუნებული ხარ?',
+        text: (unanswered ? `უპასუხო კითხვებია: ${unanswered}.\n` : '') + 'შეფასების შემდეგ ტესტის თავიდან გავლა შეუძლებელია.',
+        ok: 'შეფასება',
+        cancel: 'უკან დაბრუნება'
+    });
+    if (!go || phase !== 'taking') return;
 
     phase = 'done';
     submitted = true;
