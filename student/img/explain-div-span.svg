@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 250" width="560" height="250" role="img" aria-label="მარცხნივ div: სამი ბლოკი ერთმანეთის ქვეშაა; მარჯვნივ span: მონიშნული სიტყვა წინადადების შიგნითაა">
+<style>
+:root{--win:#fff;--bar:#e6ecee;--line:#cfd8db;--ink:#1e2f36;--mute:#6a7b82;--soft:#f0f3f4;--acc:#326273;--pac:#5c9ead;--tan:#e39774;--link:#2b6f84;--wash:#e1edf0;--mark:#f4d6c4}
+@media (prefers-color-scheme:dark){:root{--win:#16252b;--bar:#1e3038;--line:#2c444d;--ink:#e6eef0;--mute:#97adb5;--soft:#1e3038;--acc:#8cc3d0;--link:#8cc3d0;--wash:#1d3a44;--mark:#6a4a3a}}
+text{font-family:"Segoe UI","Noto Sans Georgian",Sylfaen,system-ui,sans-serif;fill:var(--ink)}
+.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace}
+.mute{fill:var(--mute)}
+.link{fill:var(--link)}
+</style>
+
+<rect x=".5" y=".5" width="559" height="249" rx="12" fill="var(--win)" stroke="var(--line)"/>
+<g transform="translate(20,20)">
+  <rect width="240" height="210" rx="10" fill="var(--soft)"/>
+  <text x="16" y="28" font-size="14" font-weight="700" class="mono">&lt;div&gt;</text>
+  <rect x="16" y="46" width="208" height="34" rx="6" fill="var(--pac)" fill-opacity=".4" stroke="var(--pac)"/><text x="28" y="68" font-size="13.5">ბლოკი 1</text>
+  <rect x="16" y="90" width="208" height="34" rx="6" fill="var(--pac)" fill-opacity=".4" stroke="var(--pac)"/><text x="28" y="112" font-size="13.5">ბლოკი 2</text>
+  <rect x="16" y="134" width="208" height="34" rx="6" fill="var(--pac)" fill-opacity=".4" stroke="var(--pac)"/><text x="28" y="156" font-size="13.5">ბლოკი 3</text>
+  <text x="16" y="194" font-size="12.5" class="mute">ყოველი ახალ ხაზზე იწყება</text>
+</g>
+<g transform="translate(300,20)">
+  <rect width="240" height="210" rx="10" fill="var(--soft)"/>
+  <text x="16" y="28" font-size="14" font-weight="700" class="mono">&lt;span&gt;</text>
+  <text x="16" y="84" font-size="13.5" xml:space="preserve">ეს არის <tspan font-weight="600" style="fill:var(--ink);stroke:var(--mark);stroke-width:12;paint-order:stroke;stroke-linejoin:round">მნიშვნელოვანი</tspan></text><text x="16" y="112" font-size="13.5">ტექსტი ერთ წინადადებაში.</text>
+  <text x="16" y="194" font-size="12.5" class="mute">ხაზის შიგნით რჩება</text>
+</g>
+</svg>

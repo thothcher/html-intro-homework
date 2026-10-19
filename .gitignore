@@ -1,0 +1,10 @@
+node_modules/
+.wrangler/
+.dev.vars
+*.log
+
+# local only: the lecturers' site has its own repository (lecturer/), plus a backup of the old
+# dashboard and the Cloudflare deploy config for the lecturer site
+lecturer/
+old/
+wrangler.jsonc

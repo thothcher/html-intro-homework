@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ka">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML შესავალი - საშინაო დავალება</title>
+    <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
+    <style>
+        :root {
+            /* პალიტრა: pacific blue / blue slate / platinum / tangerine dream */
+            --pacific: #5c9ead;
+            --slate: #326273;
+            --tangerine: #e39774;
+
+            --bg: #eeeeee;
+            --card: #ffffff;
+            --soft: #eeeeee;
+            --soft-hover: #e2e6e7;
+            --text: #1e2f36;
+            --muted: #56666d;
+            --accent: #326273;
+            --accent-ink: #ffffff;
+            --accent-weak: #e1edf0;
+            --fill: #5c9ead;
+            --track: #d6dcde;
+            --ok: #2a5b6a;
+            --ok-bg: #d8eaee;
+            --bad: #a04c28;
+            --bad-bg: #fbe9df;
+            --code-bg: #f1f2f3;
+            --code-fg: #22333a;
+            --code-mute: #7f8f95;
+            --code-hover: rgba(50, 98, 115, .07);
+            --code-sel: rgba(92, 158, 173, .28);
+            --code-ok: rgba(92, 158, 173, .30);
+            --code-bad: rgba(227, 151, 116, .34);
+            --code-miss: rgba(50, 98, 115, .16);
+            /* კოდის ფერები - VS Code Light+ */
+            --tok-tag: #800000;
+            --tok-attr: #e50000;
+            --tok-str: #0000ff;
+            --tok-punct: #800000;
+            --tok-com: #008000;
+            --tok-ent: #ee0000;
+            --drag-bg: #d7e6eb;
+            --radius: 16px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #0f1a1e;
+                --card: #16252b;
+                --soft: #1e3038;
+                --soft-hover: #27404a;
+                --text: #e6eef0;
+                --muted: #97adb5;
+                --accent: #8cc3d0;
+                --accent-ink: #0f1a1e;
+                --accent-weak: #1d3a44;
+                --fill: #5c9ead;
+                --track: #22373f;
+                --ok: #9fd3df;
+                --ok-bg: #1c3d48;
+                --bad: #f2b595;
+                --bad-bg: #3d2c23;
+                --code-bg: #0f1b20;
+                --code-fg: #dbe8ec;
+                --code-mute: #6f8790;
+                --code-hover: rgba(255, 255, 255, .06);
+                --code-sel: rgba(92, 158, 173, .30);
+                --code-ok: rgba(92, 158, 173, .32);
+                --code-bad: rgba(227, 151, 116, .28);
+                --code-miss: rgba(140, 195, 208, .18);
+                /* კოდის ფერები - VS Code Dark+ */
+                --tok-tag: #569cd6;
+                --tok-attr: #9cdcfe;
+                --tok-str: #ce9178;
+                --tok-punct: #808080;
+                --tok-com: #6a9955;
+                --tok-ent: #d7ba7d;
+                --drag-bg: #264452;
+            }
+        }
+
+        * { box-sizing: border-box; }
+        [hidden] { display: none !important; }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", "Noto Sans Georgian", Arial, sans-serif;
+            line-height: 1.6;
+        }
+
+        code, pre, input.fillin, .code {
+            font-family: Consolas, "Cascadia Mono", "Courier New", monospace;
+        }
+
+        code { font-size: .92em; }
+
+        p code, li code, label code, h3 code, .explain code, .ans code {
+            background: var(--accent-weak);
+            color: var(--text);
+            padding: 1px 6px;
+            border-radius: 6px;
+        }
+
+        :focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+        /* ---------- ზედა არე ---------- */
+        .top {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 32px 16px 8px;
+        }
+        .top h1 { margin: 0 0 4px; font-size: clamp(1.5rem, 4.5vw, 2rem); line-height: 1.25; font-weight: 700; }
+        .top p { margin: 0; color: var(--muted); }
+        .top h1::after { content: ""; display: block; width: 44px; height: 4px; margin-top: 10px; border-radius: 4px; background: var(--tangerine); }
+
+        .progress {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--bg);
+            margin-top: 12px;
+        }
+        .progress-in {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: .92rem;
+        }
+        .progress-in span { white-space: nowrap; font-weight: 600; color: var(--muted); }
+        .track { flex: 1; height: 8px; background: var(--track); border-radius: 99px; overflow: hidden; }
+        .fillbar { height: 100%; width: 0; background: var(--fill); border-radius: 99px; transition: width .2s; }
+
+        main, footer { max-width: 820px; margin: 0 auto; padding: 0 16px; }
+        main { padding-top: 12px; padding-bottom: 8px; }
+
+        .card {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            margin-bottom: 14px;
+        }
+        .card h2 { margin: 0 0 10px; font-size: 1.15rem; }
+
+        /* ---------- ინსტრუქცია ---------- */
+        .types { list-style: none; margin: 0 0 12px; padding: 0; display: grid; gap: 8px; }
+        .types li { display: flex; gap: 10px; align-items: baseline; }
+        .badge {
+            display: inline-block;
+            padding: 1px 10px;
+            border-radius: 99px;
+            background: var(--accent-weak);
+            color: var(--accent);
+            font-size: .8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .note { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
+        .hero { display: block; width: 100%; height: auto; margin: 0 0 18px; border-radius: 12px; }
+
+        /* ---------- ვინ ხარ? ---------- */
+        .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px 16px; margin-bottom: 14px; }
+        .field label { display: block; font-weight: 600; margin-bottom: 6px; }
+        .field input, .field select {
+            width: 100%;
+            padding: 11px 14px;
+            font: inherit;
+            color: var(--text);
+            background: var(--soft);
+            border: 0;
+            border-radius: 10px;
+        }
+        .field input::placeholder, .fillin::placeholder { color: var(--muted); }
+        .field [aria-invalid="true"] { outline: 2px solid var(--bad); outline-offset: 0; }
+        .help { margin: 6px 0 0; color: var(--muted); font-size: .85rem; min-height: 1.3em; }
+        .help b { color: var(--text); }
+        .notice { margin: 0 0 14px; padding: 12px 16px; border-radius: 12px; background: var(--bad-bg); color: var(--text); font-size: .95rem; }
+        .notice strong { color: var(--bad); font-weight: 700; }
+        .notice.info { background: var(--accent-weak); }
+        .notice.info strong { color: var(--accent); }
+        .who-bar { display: flex; flex-wrap: wrap; gap: 4px 22px; align-items: baseline; padding: 14px 22px; scroll-margin-top: 64px; }
+        .who-bar span { color: var(--muted); font-size: .88rem; }
+        .who-bar b { color: var(--text); font-size: 1rem; margin-left: 6px; }
+
+        /* სურათები კითხვებში */
+        .fig { margin: 0 0 16px; }
+        .fig.after { margin: 14px 0 0; }
+        .fig img { display: block; width: 100%; max-width: 560px; height: auto; border-radius: 12px; }
+        .fig figcaption { margin-top: 6px; color: var(--muted); font-size: .85rem; }
+
+        /* ---------- კითხვის ბარათი ---------- */
+        .q { scroll-margin-top: 70px; }
+        .qh { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 0 0 10px; font-size: 1rem; }
+        .num {
+            display: inline-grid;
+            place-items: center;
+            min-width: 34px;
+            height: 34px;
+            padding: 0 6px;
+            border-radius: 50%;
+            background: var(--accent-weak);
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .status { margin-left: auto; padding: 2px 12px; border-radius: 99px; font-weight: 700; font-size: .85rem; }
+        .q.ok .status { background: var(--ok-bg); color: var(--ok); }
+        .q.bad .status { background: var(--bad-bg); color: var(--bad); }
+        .qt { margin: 0 0 4px; font-weight: 600; }
+        .hint { margin: 0 0 14px; color: var(--muted); font-size: .88rem; }
+
+        /* არჩევანი */
+        .opts { display: grid; gap: 8px; }
+        .opt {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            padding: 11px 14px;
+            background: var(--soft);
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .opt:hover { background: var(--soft-hover); }
+        .opt input { margin-top: 5px; accent-color: var(--accent); }
+        .opt:has(input:checked) { background: var(--accent-weak); }
+        .opt.ok, .opt.ok:has(input:checked) { background: var(--ok-bg); }
+        .opt.bad, .opt.bad:has(input:checked) { background: var(--bad-bg); }
+        .opt.ok::after, .opt.bad::after { margin-left: auto; font-weight: 700; }
+        .opt.ok::after { content: "✔"; color: var(--ok); }
+        .opt.bad::after { content: "✘"; color: var(--bad); }
+
+        /* კოდის ბლოკი */
+        .code {
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 12px;
+            padding: 10px 0;
+            margin: 0;
+            overflow-x: auto;
+            font-size: .92rem;
+        }
+        pre.code { padding: 14px 16px; white-space: pre; }
+
+        /* შეცდომის პოვნა */
+        .ln {
+            display: flex;
+            width: 100%;
+            gap: 14px;
+            align-items: baseline;
+            text-align: left;
+            padding: 3px 16px;
+            border: 0;
+            background: transparent;
+            color: var(--code-fg);
+            font: inherit;
+            cursor: pointer;
+        }
+        .ln code { white-space: pre; font-size: inherit; background: none; padding: 0; }
+        .ln .no { color: var(--code-mute); min-width: 1.6em; text-align: right; user-select: none; }
+        .ln:hover:not(:disabled) { background: var(--code-hover); }
+        .ln[aria-pressed="true"] { background: var(--code-sel); }
+        .ln:disabled { cursor: default; color: var(--code-fg); }
+        .ln.ok { background: var(--code-ok); }
+        .ln.bad { background: var(--code-bad); }
+        .ln.miss { background: var(--code-miss); }
+        .ln.ok::after, .ln.bad::after, .ln.miss::after { margin-left: auto; font-weight: 700; font-size: .85rem; white-space: nowrap; }
+        .ln.ok::after { content: "✔ სწორია"; color: var(--ok); }
+        .ln.bad::after { content: "✘ აქ შეცდომა არ არის"; color: var(--bad); }
+        .ln.miss::after { content: "← აქ იყო შეცდომა"; color: var(--code-fg); }
+        .fixes { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: .92rem; }
+
+        /* თანმიმდევრობა */
+        .order { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+        .ord {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px 6px 10px;
+            background: var(--code-bg);
+            color: var(--code-fg);
+            border-radius: 10px;
+            position: relative;
+            user-select: none;
+        }
+        .ord.can-drag { cursor: grab; }
+        .ord code { flex: 1; white-space: pre-wrap; word-break: break-word; font-size: .92rem; background: none; padding: 0; }
+        .ord .grip { color: var(--code-mute); min-width: 28px; align-self: stretch; display: flex; align-items: center; justify-content: center; letter-spacing: -2px; touch-action: none; }
+        .ord.can-drag .grip { cursor: grab; }
+        .ord.dragging { z-index: 3; cursor: grabbing; background: var(--drag-bg); box-shadow: 0 8px 22px rgba(30, 47, 54, .25); }
+        .ord.drop-before::before, .ord.drop-after::after { content: ""; position: absolute; left: 8px; right: 8px; height: 3px; border-radius: 3px; background: var(--tangerine); z-index: 5; }
+        .ord.drop-before::before { top: -5px; }
+        .ord.drop-after::after { bottom: -5px; }
+        .t-tag { color: var(--tok-tag); }
+        .t-attr { color: var(--tok-attr); }
+        .t-str { color: var(--tok-str); }
+        .t-punct { color: var(--tok-punct); }
+        .t-com { color: var(--tok-com); font-style: italic; }
+        .t-ent { color: var(--tok-ent); }
+        .ord.ok { background: var(--code-ok); }
+        .ord.bad { background: var(--code-bad); }
+        .ord.ok::after, .ord.bad::after { font-weight: 700; padding-right: 6px; }
+        .ord.ok::after { content: "✔"; color: var(--ok); }
+        .ord.bad::after { content: "✘"; color: var(--bad); }
+        .mini {
+            width: 36px;
+            height: 36px;
+            border: 0;
+            border-radius: 8px;
+            background: rgba(127, 127, 140, .16);
+            color: var(--code-fg);
+            font-size: 1.05rem;
+            cursor: pointer;
+        }
+        .mini:hover:not(:disabled) { background: rgba(127, 127, 140, .30); }
+        .mini:disabled { opacity: .3; cursor: default; }
+        .correct-order { margin-top: 12px; }
+        .correct-order p { margin: 0 0 6px; font-weight: 600; font-size: .92rem; }
+
+        /* ჩაწერა */
+        .fill { padding: 14px 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+        .fill code { white-space: pre-wrap; background: none; padding: 0; }
+        input.fillin {
+            width: 9ch;
+            min-width: 7ch;
+            padding: 5px 9px;
+            font-size: 1rem;
+            color: var(--text);
+            background: var(--card);
+            border: 0;
+            border-radius: 8px;
+        }
+        input.fillin.ok { background: var(--ok-bg); color: var(--ok); }
+        input.fillin.bad { background: var(--bad-bg); color: var(--bad); }
+        .ans { margin: 8px 0 0; font-size: .92rem; font-weight: 600; }
+
+        /* შესაბამისობა */
+        .match { display: grid; gap: 8px; }
+        .mrow {
+            display: grid;
+            grid-template-columns: minmax(110px, 170px) 1fr;
+            gap: 8px 12px;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--soft);
+            border-radius: 12px;
+        }
+        .mrow code { font-weight: 700; background: none; padding: 0; }
+        .mrow select {
+            width: 100%;
+            padding: 9px 10px;
+            font: inherit;
+            color: var(--text);
+            background: var(--card);
+            border: 0;
+            border-radius: 8px;
+        }
+        .mrow .ans { grid-column: 1 / -1; margin: 0; color: var(--bad); }
+        .mrow.ok { background: var(--ok-bg); }
+        .mrow.bad { background: var(--bad-bg); }
+        .mrow.ok code::before { content: "✔ "; color: var(--ok); }
+        .mrow.bad code::before { content: "✘ "; color: var(--bad); }
+
+        /* განმარტება */
+        .explain {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            background: var(--accent-weak);
+            font-size: .95rem;
+        }
+        .explain code { background: var(--card); }
+        .explain strong { display: block; margin-bottom: 2px; }
+        .explain p { margin: 0; }
+
+        /* ღილაკები */
+        .btn {
+            padding: 11px 22px;
+            font: inherit;
+            font-weight: 600;
+            color: var(--accent-ink);
+            background: var(--accent);
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+        .btn:hover { filter: brightness(1.08); }
+        .btn.ghost { background: var(--card); color: var(--accent); }
+        .submit { text-align: center; padding: 8px 0 24px; }
+        .submit .btn { font-size: 1.1rem; padding: 14px 44px; }
+        .submit p { color: var(--muted); margin: 10px 0 0; font-size: .92rem; }
+
+        /* შედეგი */
+        .result { background: var(--accent-weak); }
+        .result .who { margin: 0; color: var(--muted); }
+        .score { margin: 6px 0; font-size: 2.6rem; font-weight: 700; line-height: 1.2; }
+        .score small { font-size: 1.2rem; font-weight: 600; color: var(--muted); margin-left: 6px; }
+        .msg { margin: 0 0 12px; font-weight: 600; }
+        .bytype { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; padding: 0; list-style: none; }
+        .bytype li { padding: 4px 14px; background: var(--card); border-radius: 99px; font-size: .9rem; }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .actions label { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+        .only-wrong .q.ok { display: none; }
+        .send { margin: 0 0 12px; font-weight: 600; color: var(--muted); }
+        .send.ok { color: var(--ok); }
+        .send.bad { color: var(--bad); }
+
+        footer { text-align: center; color: var(--muted); font-size: .9rem; padding-bottom: 32px; }
+
+        @media (max-width: 520px) {
+            .card { padding: 16px; }
+            .mrow { grid-template-columns: 1fr; }
+            .progress-in span { font-size: .82rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top">
+        <h1>საშინაო დავალება: HTML შესავალი</h1>
+        <p>ლექცია 4 · 24 კითხვა · თითო სწორი პასუხი = 1 ქულა · ტესტის გავლა შეიძლება მხოლოდ ერთხელ</p>
+    </header>
+
+    <div class="progress" id="progress" hidden>
+        <div class="progress-in">
+            <span id="progressText">პასუხი გაცემულია: 0 / 24</span>
+            <div class="track" role="progressbar" aria-label="პროგრესი" aria-valuemin="0" aria-valuemax="24" aria-valuenow="0">
+                <div class="fillbar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <main>
+        <section class="card" id="intro">
+            <img class="hero" src="img/hero.svg" alt="" width="760" height="150">
+            <h2>როგორ შეავსო</h2>
+            <ul class="types">
+                <li><span class="badge">ტესტი</span> აირჩიე ერთი სწორი პასუხი.</li>
+                <li><span class="badge">თანმიმდევრობა</span> დაალაგე კოდის ხაზები სწორ რიგში (გადაათრიე ან გამოიყენე ისრები).</li>
+                <li><span class="badge">იპოვე შეცდომა</span> დააწკაპუნე კოდის იმ ხაზზე, სადაც შეცდომაა.</li>
+                <li><span class="badge">ჩაწერე</span> ჩაწერე ზუსტად ისე, როგორც კოდში იწერება.</li>
+                <li><span class="badge">შესაბამისობა</span> ყოველ ელემენტს აურჩიე შესაბამისი განმარტება.</li>
+            </ul>
+            <p class="note" style="margin-bottom:0">პასუხები და განმარტებები გამოჩნდება მხოლოდ „შეფასებაზე“ დაჭერის შემდეგ. კითხვებზე პასუხი დაწერე ჯერ ლექციის ფაილის (<code>index.html</code>) გარეშე, მერე შეამოწმე.</p>
+        </section>
+
+        <section class="card" id="startCard">
+            <h2>ვინ ხარ?</h2>
+            <form id="startForm" novalidate>
+                <div class="fields">
+                    <div class="field">
+                        <label for="studentName">სახელი და გვარი</label>
+                        <input type="text" id="studentName" autocomplete="name" maxlength="60" placeholder="მაგ: გიორგი გიორგაძე">
+                    </div>
+                    <div class="field">
+                        <label for="lecturer">ლექტორი</label>
+                        <select id="lecturer" disabled><option value="">იტვირთება…</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="group">ჯგუფის ნომერი</label>
+                        <input type="text" id="group" list="groupList" maxlength="24" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="მაგ: SE-621-6">
+                        <datalist id="groupList"></datalist>
+                        <p class="help" id="groupHelp">დიდი და პატარა ასოები არ აქვს მნიშვნელობა.</p>
+                    </div>
+                </div>
+                <div class="notice info"><strong>ყურადღება:</strong> ტესტის გავლა შეგიძლია მხოლოდ ერთხელ. დაწყებამდე დარწმუნდი, რომ სახელი, ლექტორი და ჯგუფი სწორად გაქვს მითითებული - დაწყების შემდეგ მათი შეცვლა შეუძლებელია.</div>
+                <div class="notice" id="startMsg" role="alert" hidden></div>
+                <button type="submit" class="btn" id="startBtn" disabled>ტესტის დაწყება</button>
+                <button type="button" class="btn ghost" id="metaRetry" hidden>ხელახლა ცდა</button>
+            </form>
+        </section>
+
+        <section class="card who-bar" id="whoBar" hidden></section>
+
+        <section class="card result" id="result" hidden>
+            <h2>შედეგი</h2>
+            <p class="who" id="resWho"></p>
+            <div class="score"><span id="resScore"></span><small id="resPercent"></small></div>
+            <p class="msg" id="resMsg"></p>
+            <ul class="bytype" id="resTypes"></ul>
+            <p class="send" id="sendStatus" role="status"></p>
+            <div class="actions">
+                <button type="button" class="btn ghost" id="resendBtn" hidden>ხელახლა გაგზავნა</button>
+                <label><input type="checkbox" id="onlyWrong"> მხოლოდ არასწორების ჩვენება</label>
+                <button type="button" class="btn ghost" id="copyBtn">შედეგის კოპირება</button>
+            </div>
+        </section>
+
+        <div id="quiz"></div>
+
+        <section class="submit" id="submitBox" hidden>
+            <button type="button" class="btn" id="submitBtn">შეფასება</button>
+            <p>დააჭირე, როცა ყველა კითხვას უპასუხებ. შეფასებისას შენი სახელი, ჯგუფი, ქულა და დახარჯული დრო ლექტორს გაეგზავნება. ახალი ცდა აღარ იქნება.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>წარმატებები! &copy; 2026</p>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="questions.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 170" width="560" height="170" role="img" aria-label="გვერდის ბოლოში წერია: „გვერდი შექმნილია HTML-ის შესასწავლად © 2026“">
+<style>
+:root{--win:#fff;--bar:#e6ecee;--line:#cfd8db;--ink:#1e2f36;--mute:#6a7b82;--soft:#f0f3f4;--acc:#326273;--pac:#5c9ead;--tan:#e39774;--link:#2b6f84;--wash:#e1edf0;--mark:#f4d6c4}
+@media (prefers-color-scheme:dark){:root{--win:#16252b;--bar:#1e3038;--line:#2c444d;--ink:#e6eef0;--mute:#97adb5;--soft:#1e3038;--acc:#8cc3d0;--link:#8cc3d0;--wash:#1d3a44;--mark:#6a4a3a}}
+text{font-family:"Segoe UI","Noto Sans Georgian",Sylfaen,system-ui,sans-serif;fill:var(--ink)}
+.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace}
+.mute{fill:var(--mute)}
+.link{fill:var(--link)}
+</style>
+
+<rect x=".5" y=".5" width="559" height="169" rx="12" fill="var(--win)" stroke="var(--line)"/>
+<path d="M.5 40V12.5a12 12 0 0 1 12-12h535a12 12 0 0 1 12 12V40z" fill="var(--bar)"/>
+<circle cx="22" cy="21" r="5" fill="var(--tan)"/><circle cx="40" cy="21" r="5" fill="#e6c27a"/><circle cx="58" cy="21" r="5" fill="var(--pac)"/>
+<path d="M78 40v-18a9 9 0 0 1 9-9h150a9 9 0 0 1 9 9v18z" fill="var(--win)"/>
+<text x="94" y="31" font-size="13.5">ჩემი გვერდი</text>
+<rect x="262" y="10" width="278" height="22" rx="11" fill="var(--win)" stroke="var(--line)"/>
+<text x="278" y="26" font-size="12" class="mute mono">index.html</text>
+
+<rect x="24" y="96" width="512" height="48" rx="10" fill="var(--soft)"/>
+<text x="280" y="126" font-size="16" text-anchor="middle">გვერდი შექმნილია HTML-ის შესასწავლად © 2026</text>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 200" width="560" height="200" role="img" aria-label="ორი ბარათი: charset-ის გარეშე ქართული ტექსტი ირღვევა და ჩანს უაზრო სიმბოლოები; UTF-8-ით ჩანს „ქართული ენა“">
+<style>
+:root{--win:#fff;--bar:#e6ecee;--line:#cfd8db;--ink:#1e2f36;--mute:#6a7b82;--soft:#f0f3f4;--acc:#326273;--pac:#5c9ead;--tan:#e39774;--link:#2b6f84;--wash:#e1edf0;--mark:#f4d6c4}
+@media (prefers-color-scheme:dark){:root{--win:#16252b;--bar:#1e3038;--line:#2c444d;--ink:#e6eef0;--mute:#97adb5;--soft:#1e3038;--acc:#8cc3d0;--link:#8cc3d0;--wash:#1d3a44;--mark:#6a4a3a}}
+text{font-family:"Segoe UI","Noto Sans Georgian",Sylfaen,system-ui,sans-serif;fill:var(--ink)}
+.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace}
+.mute{fill:var(--mute)}
+.link{fill:var(--link)}
+</style>
+
+<rect x=".5" y=".5" width="559" height="199" rx="12" fill="var(--win)" stroke="var(--line)"/>
+<g>
+  <rect x="20" y="20" width="248" height="160" rx="10" fill="var(--soft)"/>
+  <text x="36" y="48" font-size="13" font-weight="700" class="mute">charset-ის გარეშე</text>
+  <text x="36" y="104" font-size="19" class="mono">áƒ¥áƒáƒ áƒ—áƒ£áƒšáƒ˜</text>
+  <text x="36" y="132" font-size="19" class="mono">áƒ”áƒœáƒ</text>
+  <text x="36" y="164" font-size="13" class="mute">ასოები დაზიანებულია</text>
+</g>
+<path d="M280 100h0" stroke="none"/>
+<g>
+  <rect x="292" y="20" width="248" height="160" rx="10" fill="var(--wash)"/>
+  <text x="308" y="48" font-size="13" font-weight="700" style="fill:var(--acc)">&lt;meta charset=&quot;UTF-8&quot;&gt;</text>
+  <text x="308" y="112" font-size="30" font-weight="600">ქართული ენა</text>
+  <text x="308" y="164" font-size="13" class="mute">ასოები სწორად ჩანს</text>
+</g>
+</svg>

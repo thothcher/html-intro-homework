@@ -1,0 +1,9 @@
+name = "homework-api"
+main = "src/index.js"
+compatibility_date = "2025-09-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "homework-db"
+# შეცვალე იმ id-ით, რომელსაც `npx wrangler d1 create homework-db` დაგიბრუნებს (იხ. ../README.md)
+database_id = "854853dd-cd7a-478a-8f06-c9c996fcab20"
