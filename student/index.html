@@ -179,6 +179,7 @@
             font-weight: 600;
             white-space: nowrap;
         }
+        .badge.topic { background: var(--tangerine); color: #1e2f36; }
         .note { color: var(--muted); margin: 0 0 16px; font-size: .95rem; }
         .hero { display: block; width: 100%; height: auto; margin: 0 0 18px; border-radius: 12px; }
 
@@ -523,6 +524,10 @@
             <p class="who" id="resWho"></p>
             <div class="score"><span id="resScore"></span><small id="resPercent"></small></div>
             <p class="msg" id="resMsg"></p>
+            <div id="resTopicsBox" hidden>
+                <p class="note" style="margin-bottom:8px">თემების მიხედვით</p>
+                <ul class="bytype" id="resTopics"></ul>
+            </div>
             <ul class="bytype" id="resTypes"></ul>
             <p class="send" id="sendStatus" role="status"></p>
             <div class="actions">

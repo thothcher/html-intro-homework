@@ -469,6 +469,7 @@ function renderQuestion(q, i, review) {
     const card = h('article', { class: 'card q' + (review ? (ok ? ' ok' : ' bad') : ''), id: 'q' + (i + 1) });
     card.append(h('h3', { class: 'qh' },
         h('span', { class: 'num' }, String(i + 1)),
+        q.topic ? h('span', { class: 'badge topic' }, q.topic) : null,
         h('span', { class: 'badge' }, TYPE_LABEL[q.type]),
         review ? h('span', { class: 'status' }, ok ? '✔ სწორია' : '✘ არასწორია') : null
     ));
@@ -664,12 +665,18 @@ async function submit() {
     submitted = true;
     let score = 0;
     const byType = {};
+    const byTopic = {};     // თემების მიხედვით დაჯგუფება, თუ ტესტს თემები აქვს (q.topic)
     const detail = QUESTIONS.map((q, i) => {
         const ok = isCorrect(q, S[i]);
         if (ok) score++;
         byType[q.type] = byType[q.type] || { ok: 0, total: 0 };
         byType[q.type].total++;
         if (ok) byType[q.type].ok++;
+        if (q.topic) {
+            byTopic[q.topic] = byTopic[q.topic] || { ok: 0, total: 0 };
+            byTopic[q.topic].total++;
+            if (ok) byTopic[q.topic].ok++;
+        }
         return ok ? '1' : '0';
     }).join('');
 
@@ -696,7 +703,14 @@ async function submit() {
         typesEl.append(h('li', {}, `${TYPE_LABEL[t]}: ${byType[t].ok} / ${byType[t].total}`));
         typeLines.push(`${TYPE_LABEL[t]}: ${byType[t].ok}/${byType[t].total}`);
     });
-    lastReport = `საშინაო დავალება: ${QUIZ.title}\n${me.name} · ${me.group} · ლექტორი: ${me.lecturer}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\nდრო: ${fmtTime(timeSec)}\n${date}`;
+    const topicsEl = $('resTopics');
+    topicsEl.textContent = '';
+    const topicLines = Object.entries(byTopic).map(([t, v]) => {
+        topicsEl.append(h('li', {}, `${t}: ${v.ok} / ${v.total}`));
+        return `${t}: ${v.ok}/${v.total}`;
+    });
+    $('resTopicsBox').hidden = !topicLines.length;
+    lastReport = `საშინაო დავალება: ${QUIZ.title}\n${me.name} · ${me.group} · ლექტორი: ${me.lecturer}\nქულა: ${score}/${total} (${pct}%)\n${topicLines.length ? 'თემები: ' + topicLines.join(' · ') + '\n' : ''}${typeLines.join(' · ')}\nდრო: ${fmtTime(timeSec)}\n${date}`;
 
     document.getElementById('result').hidden = false;
     document.getElementById('submitBox').hidden = true;

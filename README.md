@@ -7,14 +7,7 @@ A quiz for students (HTML basics, lecture 4) whose results go to a small databas
 | Quiz | Direct link |
 |---|---|
 | HTML intro (lecture 4, 24 questions) | https://thothcher.github.io/html-intro-homework/student/ |
-| JavaScript · conditions | https://thothcher.github.io/html-intro-homework/student/?quiz=js-conditions |
-| JavaScript · loops | https://thothcher.github.io/html-intro-homework/student/?quiz=js-loops |
-| JavaScript · functions | https://thothcher.github.io/html-intro-homework/student/?quiz=js-functions |
-| JavaScript · classes | https://thothcher.github.io/html-intro-homework/student/?quiz=js-classes |
-| JavaScript · DOM | https://thothcher.github.io/html-intro-homework/student/?quiz=js-dom |
-| JavaScript · BOM | https://thothcher.github.io/html-intro-homework/student/?quiz=js-bom |
-| JavaScript · API (fetch) | https://thothcher.github.io/html-intro-homework/student/?quiz=js-api |
-| JavaScript · CRUD | https://thothcher.github.io/html-intro-homework/student/?quiz=js-crud |
+| JavaScript, all topics in one test (36 questions: conditions, loops, functions, classes, DOM, BOM, API, CRUD) | https://thothcher.github.io/html-intro-homework/student/?quiz=js-all |
 
 (the old link `.../homework.html` redirects to the HTML quiz)
 
@@ -52,7 +45,7 @@ API address: `https://homework-api.homework-api.workers.dev`
 | Export results | Lecturers' dashboard → **CSV** (opens in Excel; follows the selected group) |
 | Back up everything | `cd api && npx wrangler d1 export homework-db --remote --output backup.sql` |
 | Start a new semester | `cd api && npx wrangler d1 execute homework-db --remote --command "DELETE FROM results"` |
-| Add another quiz | Copy a file in `student/quizzes/` (e.g. `js-loops.js`), give it a new `id`, write the questions, add the same id, title and number of questions to `QUIZZES` in `api/src/config.js`, run `npm test` (checks the question files), deploy the API, add a tile to `student/menu.html` and push. The quiz opens at `student/?quiz=<id>`; the dashboard's quiz picker lists it automatically. |
+| Add another quiz | Copy a file in `student/quizzes/` (e.g. `js-all.js`), give it a new `id`, write the questions, add the same id, title and number of questions (and optionally `topics`, see `js-all`) to `QUIZZES` in `api/src/config.js`, run `npm test` (checks the question files), deploy the API, add a tile to `student/menu.html` and push. The quiz opens at `student/?quiz=<id>`; the dashboard's quiz picker lists it automatically. |
 
 ## Deploy from scratch
 
@@ -89,4 +82,4 @@ npm run test:api    # full API test against the running dev server
 - Anyone who knows the API address can send results to the public student endpoints. Junk rows can be cleared one by one from the dashboard.
 - The free Cloudflare plan is plenty for a class (100k requests and 100k database writes per day). The dashboard pauses auto-refresh in background tabs to save quota.
 - Results from the very first version (MockAPI) were not migrated - they had no group or lecturer.
-- Quiz files declare `lang: 'html'` or `'js'`: it picks the code colouring and, for fill-in-the-blank questions, the blank marker (`{}` in HTML quizzes, `____` in JavaScript quizzes) and whether capitals matter (they do in JavaScript). A question can show a code sample with `snippet`.
+- Quiz files declare `lang: 'html'` or `'js'`: it picks the code colouring and, for fill-in-the-blank questions, the blank marker (`{}` in HTML quizzes, `____` in JavaScript quizzes) and whether capitals matter (they do in JavaScript). A question can show a code sample with `snippet`, and `topic` puts a topic label on the question and groups the score by topic on the result page; list the topics in `QUIZZES[...].topics` and the dashboard shows a per-topic chart.

@@ -31,6 +31,12 @@ for (const file of files) {
     assert.equal(file, `${quiz.id}.js`);
     assert.ok(QUIZZES[quiz.id], 'quiz id is missing from api/src/config.js');
     assert.equal(questions.length, QUIZZES[quiz.id].max, 'number of questions must equal max in api/src/config.js');
+    const topics = QUIZZES[quiz.id].topics;
+    if (topics) {
+      // ყოველი კითხვის თემა კონფიგურაციის რიგსა და რაოდენობას უნდა ემთხვეოდეს (დაფა მათი მიხედვით აჯგუფებს შედეგებს)
+      const expected = topics.flatMap(([name, n]) => Array(n).fill(name));
+      assert.deepEqual(Array.from(questions, q => q.topic), expected, 'question topics must follow QUIZZES[...].topics in api/src/config.js');
+    }
     assert.ok(['html', 'js'].includes(quiz.lang));
     assert.ok(quiz.title);
     if (quiz.hero) assert.ok(fs.existsSync(path.join(STUDENT, quiz.hero)), `missing ${quiz.hero}`);
