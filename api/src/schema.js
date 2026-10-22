@@ -1,4 +1,5 @@
-import { LECTURERS } from './config.js';
+import { LECTURERS, GROUPS } from './config.js';
+import { normalizeGroup } from './normalize.js';
 
 /* ბაზის სქემა იქმნება პირველივე მოთხოვნისას (CREATE ... IF NOT EXISTS), ამიტომ ცალკე მიგრაციის გაშვება საჭირო არ არის. */
 const TABLES = [
@@ -12,7 +13,8 @@ const TABLES = [
     key        TEXT PRIMARY KEY,
     label      TEXT NOT NULL,
     created_at TEXT NOT NULL,
-    archived   INTEGER NOT NULL DEFAULT 0
+    archived   INTEGER NOT NULL DEFAULT 0,
+    pinned     INTEGER NOT NULL DEFAULT 0
   )`,
   `CREATE TABLE IF NOT EXISTS results (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,9 +49,22 @@ async function init(db) {
     db.prepare(`UPDATE lecturers SET active = 0 WHERE name NOT IN (${marks})`).bind(...LECTURERS)
   ]);
 
+
   // უკვე არსებულ ბაზას "archived" სვეტი ემატება (დაარქივებული ჯგუფი სტუდენტებს ჯგუფების ჩამონათვალში არ ეჩვენებათ)
   const cols = await db.prepare('PRAGMA table_info(groups)').all();
   if (!cols.results.some(c => c.name === 'archived')) {
     await db.prepare('ALTER TABLE groups ADD COLUMN archived INTEGER NOT NULL DEFAULT 0').run();
   }
+  if (!cols.results.some(c => c.name === 'pinned')) {
+    await db.prepare('ALTER TABLE groups ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0').run();
+  }
+
+  // config.js-ში ჩამოთვლილი ჯგუფები ჩამონათვალში შედეგების გარეშეც ჩანს (pinned)
+  const pinned = GROUPS.map(normalizeGroup);
+  const now = new Date().toISOString();
+  await db.batch([
+    db.prepare('UPDATE groups SET pinned = 0'),
+    ...pinned.map(g => db.prepare('INSERT OR IGNORE INTO groups (key, label, created_at) VALUES (?, ?, ?)').bind(g.key, g.label, now)),
+    ...pinned.map(g => db.prepare('UPDATE groups SET pinned = 1, archived = 0 WHERE key = ?').bind(g.key))
+  ]);
 }

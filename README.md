@@ -29,7 +29,7 @@ API address: `https://homework-api.homework-api.workers.dev`
 **Rules the server enforces**
 
 - A student can take the test **once**. Name + group identify them; capitals and word order don't matter (`giorgi beridze` = `Beridze Giorgi`). A lecturer can clear an attempt from the dashboard if a student typed the wrong group.
-- Group names are case-insensitive: `se-621-6` and `SE-621-6` are the same group, stored as `SE-621-6`. `JP_539_4` / `jp-539-4` also match. Groups appear in the lecturers' dropdown automatically after the first student submits.
+- Group names are case-insensitive: `se-621-6` and `SE-621-6` are the same group, stored as `SE-621-6`. `JP_539_4` / `jp-539-4` also match. Groups listed in `GROUPS` (`api/src/config.js`) are in the students' dropdown from the start; any other group appears after its first student submits.
 - Scores can only be read with the **lecturer access code**. Every lecturer sees every group and every other lecturer's students.
 
 ---
@@ -40,6 +40,7 @@ API address: `https://homework-api.homework-api.workers.dev`
 |---|---|
 | Change a question | Edit `student/quizzes/<quiz id>.js`, then `git add -A && git commit -m "..." && git push`. GitHub Pages updates in about a minute. |
 | Add or remove a lecturer | Edit the list in `api/src/config.js`, then `cd api && npx wrangler deploy`. Removed lecturers disappear from the dropdowns; their students' results are kept. |
+| Add or remove a group in the dropdown | Edit `GROUPS` in `api/src/config.js`, then `cd api && npx wrangler deploy`. Students can still type any other group; it joins the list after its first result. |
 | Change the access code | `cd api && npx wrangler secret put LECTURER_CODE` (lecturers are asked to log in again) |
 | Delete a result / let a student retake the test | Lecturers' dashboard → click the trash icon at the end of the student's row and confirm. The student can then take the test again. |
 | Export results | Lecturers' dashboard → **CSV** (opens in Excel; follows the selected group) |

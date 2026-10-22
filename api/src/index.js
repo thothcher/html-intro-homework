@@ -95,7 +95,7 @@ async function requireLecturer(request, env) {
 
 const GROUPS_WITH_RESULTS = 'SELECT key, label, archived FROM groups g WHERE EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key) ORDER BY label';
 // სტუდენტებს არქივის ჯგუფები (მაგ. ძველი ბაზიდან გადმოტანილი შედეგები) არ ვაჩვენებთ
-const GROUPS_FOR_STUDENTS = 'SELECT key, label FROM groups g WHERE g.archived = 0 AND EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key) ORDER BY label';
+const GROUPS_FOR_STUDENTS = 'SELECT key, label FROM groups g WHERE g.archived = 0 AND (g.pinned = 1 OR EXISTS (SELECT 1 FROM results r WHERE r.group_key = g.key)) ORDER BY label';
 
 /* ---------- საჯარო: სტუდენტის გვერდი ---------- */
 
