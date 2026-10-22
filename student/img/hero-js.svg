@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 150" width="760" height="150" role="img" aria-label="ილუსტრაცია: ბრაუზერის ფანჯარა JavaScript-ის კოდით">
+<style>
+:root{--win:#fff;--bar:#e6ecee;--line:#cfd8db;--ink:#1e2f36;--mute:#6a7b82;--soft:#f0f3f4;--acc:#326273;--pac:#5c9ead;--tan:#e39774;--link:#2b6f84;--wash:#e1edf0;--mark:#f4d6c4}
+@media (prefers-color-scheme:dark){:root{--win:#16252b;--bar:#1e3038;--line:#2c444d;--ink:#e6eef0;--mute:#97adb5;--soft:#1e3038;--acc:#8cc3d0;--link:#8cc3d0;--wash:#1d3a44;--mark:#6a4a3a}}
+text{font-family:"Segoe UI","Noto Sans Georgian",Sylfaen,system-ui,sans-serif;fill:var(--ink)}
+.mono{font-family:Consolas,"Cascadia Mono","Courier New",monospace}
+</style>
+
+<rect width="760" height="150" rx="16" fill="var(--wash)"/>
+<g transform="translate(40,26)">
+  <rect width="250" height="104" rx="10" fill="var(--win)" stroke="var(--line)"/>
+  <path d="M0 24V10a10 10 0 0 1 10-10h230a10 10 0 0 1 10 10v14z" fill="var(--bar)"/>
+  <circle cx="16" cy="12" r="4" fill="var(--tan)"/><circle cx="30" cy="12" r="4" fill="#e6c27a"/><circle cx="44" cy="12" r="4" fill="var(--pac)"/>
+  <text x="18" y="58" font-size="15" class="mono" style="fill:var(--link)">const <tspan style="fill:var(--ink)">x = </tspan><tspan style="fill:var(--tan)">5</tspan><tspan style="fill:var(--ink)">;</tspan></text>
+  <text x="18" y="80" font-size="15" class="mono" style="fill:var(--ink)">console.<tspan style="fill:var(--link)">log</tspan>(x);</text>
+</g>
+<text x="440" y="92" font-size="76" font-weight="700" class="mono" text-anchor="middle" style="fill:var(--acc)">{ }</text>
+<circle cx="640" cy="40" r="9" fill="var(--tan)"/><circle cx="690" cy="104" r="6" fill="var(--pac)"/><circle cx="600" cy="118" r="4" fill="var(--tan)"/>
+<rect x="334" y="124" width="212" height="5" rx="2.5" fill="var(--tan)"/>
+</svg>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML შესავალი - საშინაო დავალება</title>
+    <title>საშინაო დავალება</title>
     <link rel="icon" type="image/svg+xml" href="img/favicon.svg">
     <style>
         :root {
@@ -43,6 +43,14 @@
             --tok-punct: #800000;
             --tok-com: #008000;
             --tok-ent: #ee0000;
+            /* JavaScript - VS Code Light+ */
+            --js-kw: #0000ff;
+            --js-ctl: #af00db;
+            --js-str: #a31515;
+            --js-num: #098658;
+            --js-fn: #795e26;
+            --js-var: #001080;
+            --js-cls: #267f99;
             --drag-bg: #d7e6eb;
             --radius: 16px;
         }
@@ -79,6 +87,14 @@
                 --tok-punct: #808080;
                 --tok-com: #6a9955;
                 --tok-ent: #d7ba7d;
+                /* JavaScript - VS Code Dark+ */
+                --js-kw: #569cd6;
+                --js-ctl: #c586c0;
+                --js-str: #ce9178;
+                --js-num: #b5cea8;
+                --js-fn: #dcdcaa;
+                --js-var: #9cdcfe;
+                --js-cls: #4ec9b0;
                 --drag-bg: #264452;
             }
         }
@@ -303,6 +319,16 @@
         .t-punct { color: var(--tok-punct); }
         .t-com { color: var(--tok-com); font-style: italic; }
         .t-ent { color: var(--tok-ent); }
+        .j-kw { color: var(--js-kw); }
+        .j-ctl { color: var(--js-ctl); }
+        .j-str { color: var(--js-str); }
+        .j-num { color: var(--js-num); }
+        .j-fn { color: var(--js-fn); }
+        .j-var { color: var(--js-var); }
+        .j-cls { color: var(--js-cls); }
+        pre.code.snippet { margin: 0 0 14px; }
+        .back { display: inline-block; margin-bottom: 10px; color: var(--accent); font-weight: 600; text-decoration: none; }
+        .back:hover { text-decoration: underline; }
         .ord.ok { background: var(--code-ok); }
         .ord.bad { background: var(--code-bad); }
         .ord.ok::after, .ord.bad::after { font-weight: 700; padding-right: 6px; }
@@ -436,7 +462,7 @@
 <body>
 
     <header class="top">
-        <h1>საშინაო დავალება: HTML შესავალი</h1>
+        <h1 id="pageTitle">საშინაო დავალება</h1>
     </header>
 
     <div class="progress" id="progress" hidden>
@@ -450,7 +476,7 @@
 
     <main>
         <section class="card" id="intro">
-            <img class="hero" src="img/hero.svg" alt="" width="760" height="150">
+            <img class="hero" id="heroImg" src="img/hero.svg" alt="" width="760" height="150">
             <h2>როგორ შეავსო</h2>
             <ul class="types">
                 <li><span class="badge">ტესტი</span> აირჩიე ერთი სწორი პასუხი.</li>
@@ -459,8 +485,10 @@
                 <li><span class="badge">ჩაწერე</span> ჩაწერე ზუსტად ისე, როგორც კოდში იწერება.</li>
                 <li><span class="badge">შესაბამისობა</span> ყოველ ელემენტს აურჩიე შესაბამისი განმარტება.</li>
             </ul>
-            <p class="note" style="margin-bottom:0">პასუხები და განმარტებები გამოჩნდება მხოლოდ „შეფასებაზე“ დაჭერის შემდეგ. კითხვებზე პასუხი დაწერე ჯერ ლექციის ფაილის (<code>index.html</code>) გარეშე, მერე შეამოწმე.</p>
+            <p class="note" style="margin-bottom:0">პასუხები და განმარტებები გამოჩნდება მხოლოდ „შეფასებაზე“ დაჭერის შემდეგ. <span id="introNote"></span></p>
         </section>
+
+        <div class="notice" id="loadError" role="alert" hidden></div>
 
         <section class="card" id="startCard">
             <h2>ვინ ხარ?</h2>
@@ -513,12 +541,12 @@
     </main>
 
     <footer>
+        <p><a class="back" href="menu.html">← ყველა ტესტი</a></p>
         <p>წარმატებები! &copy; 2026</p>
     </footer>
 
     <script src="config.js"></script>
-    <script src="questions.js"></script>
-    <script src="app.js"></script>
+    <script src="loader.js"></script>
 </body>
 
 </html>

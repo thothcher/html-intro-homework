@@ -2,8 +2,21 @@
 
 A quiz for students (HTML basics, lecture 4) whose results go to a small database that lecturers can browse.
 
-**Students open:** https://thothcher.github.io/html-intro-homework/student/
-(the old link `.../homework.html` redirects there)
+**Students open the list of quizzes:** https://thothcher.github.io/html-intro-homework/student/menu.html
+
+| Quiz | Direct link |
+|---|---|
+| HTML intro (lecture 4, 24 questions) | https://thothcher.github.io/html-intro-homework/student/ |
+| JavaScript · conditions | https://thothcher.github.io/html-intro-homework/student/?quiz=js-conditions |
+| JavaScript · loops | https://thothcher.github.io/html-intro-homework/student/?quiz=js-loops |
+| JavaScript · functions | https://thothcher.github.io/html-intro-homework/student/?quiz=js-functions |
+| JavaScript · classes | https://thothcher.github.io/html-intro-homework/student/?quiz=js-classes |
+| JavaScript · DOM | https://thothcher.github.io/html-intro-homework/student/?quiz=js-dom |
+| JavaScript · BOM | https://thothcher.github.io/html-intro-homework/student/?quiz=js-bom |
+| JavaScript · API (fetch) | https://thothcher.github.io/html-intro-homework/student/?quiz=js-api |
+| JavaScript · CRUD | https://thothcher.github.io/html-intro-homework/student/?quiz=js-crud |
+
+(the old link `.../homework.html` redirects to the HTML quiz)
 
 ## How it fits together
 
@@ -32,14 +45,14 @@ API address: `https://homework-api.homework-api.workers.dev`
 
 | I want to... | Do this |
 |---|---|
-| Change a question | Edit `student/questions.js`, then `git add -A && git commit -m "..." && git push`. GitHub Pages updates in about a minute. |
+| Change a question | Edit `student/quizzes/<quiz id>.js`, then `git add -A && git commit -m "..." && git push`. GitHub Pages updates in about a minute. |
 | Add or remove a lecturer | Edit the list in `api/src/config.js`, then `cd api && npx wrangler deploy`. Removed lecturers disappear from the dropdowns; their students' results are kept. |
 | Change the access code | `cd api && npx wrangler secret put LECTURER_CODE` (lecturers are asked to log in again) |
 | Delete a result / let a student retake the test | Lecturers' dashboard → click the trash icon at the end of the student's row and confirm. The student can then take the test again. |
 | Export results | Lecturers' dashboard → **CSV** (opens in Excel; follows the selected group) |
 | Back up everything | `cd api && npx wrangler d1 export homework-db --remote --output backup.sql` |
 | Start a new semester | `cd api && npx wrangler d1 execute homework-db --remote --command "DELETE FROM results"` |
-| Add another quiz | Add an entry (id, title, number of questions) to `QUIZZES` in `api/src/config.js`, deploy, and use that id in the new student page. The dashboard shows a quiz picker once there is more than one. |
+| Add another quiz | Copy a file in `student/quizzes/` (e.g. `js-loops.js`), give it a new `id`, write the questions, add the same id, title and number of questions to `QUIZZES` in `api/src/config.js`, run `npm test` (checks the question files), deploy the API, add a tile to `student/menu.html` and push. The quiz opens at `student/?quiz=<id>`; the dashboard's quiz picker lists it automatically. |
 
 ## Deploy from scratch
 
@@ -64,15 +77,16 @@ npm run dev                          # API on http://127.0.0.1:8787, local test 
 Set `API` in `student/config.js` to `http://127.0.0.1:8787` and open `student/index.html`. The access code is whatever is in `.dev.vars`. (Do not commit the changed `config.js`.)
 
 ```bash
-npm test            # group/name matching rules (no server needed)
+npm test            # group/name matching rules and the structure of every quiz file (no server needed)
 npm run test:api    # full API test against the running dev server
 ```
 
 ## Good to know
 
-- The student page's JavaScript lives in `questions.js` and `app.js` on purpose. Tools like VS Code **Live Server** insert a script before the first closing body tag of the HTML, and question 2's code sample contains such a line, which used to cut the page's script in half and print the code as text. Keep the JavaScript out of `index.html`.
+- The student page's JavaScript lives in `quizzes/*.js`, `loader.js` and `app.js` on purpose. Tools like VS Code **Live Server** insert a script before the first closing body tag of the HTML, and question 2's code sample contains such a line, which used to cut the page's script in half and print the code as text. Keep the JavaScript out of `index.html`.
 - **Scoring happens in the student's browser.** The server checks that a result is consistent (score matches the per-question answers, the lecturer exists, one attempt per student) but cannot tell if someone read the answers from the page source or sent a made-up result. If cheating becomes a problem, the next step is to move the answer key into the API.
 - The access code is one shared code. Use a long passphrase; never put it in this repository.
 - Anyone who knows the API address can send results to the public student endpoints. Junk rows can be cleared one by one from the dashboard.
 - The free Cloudflare plan is plenty for a class (100k requests and 100k database writes per day). The dashboard pauses auto-refresh in background tabs to save quota.
 - Results from the very first version (MockAPI) were not migrated - they had no group or lecturer.
+- Quiz files declare `lang: 'html'` or `'js'`: it picks the code colouring and, for fill-in-the-blank questions, the blank marker (`{}` in HTML quizzes, `____` in JavaScript quizzes) and whether capitals matter (they do in JavaScript). A question can show a code sample with `snippet`.

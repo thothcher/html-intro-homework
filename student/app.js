@@ -49,9 +49,10 @@ function ask({ title, text, ok = 'კარგი', cancel = '' }) {
     });
 }
 
-/* HTML კოდის ფერადი გამოყოფა VS Code-ის მსგავსად: თეგი, ატრიბუტი, მნიშვნელობა, კომენტარი, სიმბოლო (&lt;).
+/* კოდის ფერადი გამოყოფა VS Code-ის მსგავსად. ორი ენაა: HTML (თეგი, ატრიბუტი, მნიშვნელობა, კომენტარი, სიმბოლო &lt;)
+   და JavaScript (საკვანძო სიტყვა, სტრიქონი, რიცხვი, ფუნქცია, კლასი). ენას ტესტი განსაზღვრავს (QUIZ.lang).
    ბრაუზერის DOM-ით ვაგებთ (არა innerHTML-ით), ამიტომ ტექსტი ყოველთვის უსაფრთხოა.
-   opts.slot - ელემენტი (მაგ. input), რომელიც ჩაჯდება ტექსტში `{}`-ის ადგილას. */
+   opts.slot - ელემენტი (მაგ. input), რომელიც ჩაჯდება ტექსტში ადგილის მაჩვენებლის ადგილას (HTML-ში {}, JavaScript-ში ____). */
 const TOK = {
     comment: /<!--[\s\S]*?(-->|$)/y,
     doctype: /<!DOCTYPE/iy,
@@ -64,23 +65,22 @@ const TOK = {
     str: /"[^"]*("|$)|'[^']*('|$)/y
 };
 
-function highlight(src, opts = {}) {
-    const frag = document.createDocumentFragment();
-    const slot = opts.slot || null;
-    let inTag = !!opts.inTag;
-    let i = 0;
+const JS_TOK = {
+    comment: /\/\/[^\n]*|\/\*[\s\S]*?(?:\*\/|$)/y,
+    str: /'(?:[^'\\\n]|\\.)*(?:'|$)|"(?:[^"\\\n]|\\.)*(?:"|$)/y,
+    tpl: /`(?:[^`\\]|\\[\s\S])*(?:`|$)/y,
+    num: /\d[\d_]*(?:\.\d+)?(?:e[+-]?\d+)?/iy,
+    id: /[A-Za-z_$][\w$]*/y,
+    ws: /\s+/y
+};
+const JS_CONTROL = new Set(['if', 'else', 'for', 'while', 'do', 'switch', 'case', 'default', 'break', 'continue', 'return', 'try', 'catch', 'finally', 'throw', 'await', 'yield', 'import', 'export']);
+const JS_KEYWORD = new Set(['const', 'let', 'var', 'function', 'class', 'extends', 'static', 'get', 'set', 'typeof', 'instanceof', 'in', 'of', 'new', 'void', 'delete', 'this', 'super', 'true', 'false', 'null', 'undefined', 'NaN', 'Infinity', 'async']);
 
-    const put = (cls, text) => {
-        if (!text) return;
-        const box = cls ? h('span', { class: cls }) : frag;
-        const parts = slot && text.includes('{}') ? text.split('{}') : [text];
-        parts.forEach((p, k) => {
-            if (k > 0) box.append(slot);
-            if (p) box.append(p);
-        });
-        if (cls) frag.append(box);
-    };
+function tokenizeHtml(src, inTag) {
+    const out = [];
+    const put = (cls, text) => { if (text) out.push([cls, text]); };
     const at = re => { re.lastIndex = i; return re.exec(src); };
+    let i = 0;
 
     while (i < src.length) {
         let m;
@@ -99,19 +99,83 @@ function highlight(src, opts = {}) {
             else { put('', src[i]); i++; }
         }
     }
+    return out;
+}
+
+function tokenizeJs(src) {
+    const out = [];
+    const at = re => { re.lastIndex = i; return re.exec(src); };
+    let i = 0;
+    let prev = '';          // ბოლო არა-ჰარი სიმბოლო: წერტილის შემდეგ სახელი თვისებაა (user.name), საკვანძო სიტყვა არა
+
+    while (i < src.length) {
+        let m;
+        if ((m = at(JS_TOK.comment))) { out.push(['t-com', m[0]]); i += m[0].length; }
+        else if ((m = at(JS_TOK.str))) { out.push(['j-str', m[0]]); i += m[0].length; prev = 'x'; }
+        else if ((m = at(JS_TOK.tpl))) {
+            // შაბლონურ სტრიქონში ${...} ნაწილი კოდად ფერადდება
+            let k = 0;
+            for (const part of m[0].matchAll(/\$\{([^}]*)\}/g)) {
+                if (part.index > k) out.push(['j-str', m[0].slice(k, part.index)]);
+                out.push(['j-kw', '${'], ...tokenizeJs(part[1]), ['j-kw', '}']);
+                k = part.index + part[0].length;
+            }
+            if (k < m[0].length) out.push(['j-str', m[0].slice(k)]);
+            i += m[0].length;
+            prev = 'x';
+        }
+        else if ((m = at(JS_TOK.num))) { out.push(['j-num', m[0]]); i += m[0].length; prev = 'x'; }
+        else if ((m = at(JS_TOK.id))) {
+            const w = m[0];
+            const call = src[i + w.length] === '(';
+            let cls;
+            if (prev === '.') cls = call ? 'j-fn' : 'j-var';
+            else if (JS_CONTROL.has(w)) cls = 'j-ctl';
+            else if (JS_KEYWORD.has(w)) cls = 'j-kw';
+            else if (/^[A-Z]/.test(w)) cls = 'j-cls';
+            else cls = call ? 'j-fn' : 'j-var';
+            out.push([cls, w]);
+            i += w.length;
+            prev = 'x';
+        }
+        else if ((m = at(JS_TOK.ws))) { out.push(['', m[0]]); i += m[0].length; }
+        else { out.push(['', src[i]]); prev = src[i]; i++; }
+    }
+    return out;
+}
+
+function renderTokens(tokens, slot, mark) {
+    const frag = document.createDocumentFragment();
+    for (const [cls, text] of tokens) {
+        const box = cls ? h('span', { class: cls }) : frag;
+        const parts = slot && text.includes(mark) ? text.split(mark) : [text];
+        parts.forEach((p, k) => {
+            if (k > 0) box.append(slot);
+            if (p) box.append(p);
+        });
+        if (cls) frag.append(box);
+    }
     return frag;
 }
 
-// მოკლე ფრაგმენტი (ტექსტის შიგნით `...`) ფერადდება მხოლოდ თუ HTML-ს ჰგავს: <p>, &lt;, type="text"
+function highlight(src, opts = {}) {
+    if ((opts.lang || QUIZ.lang) === 'js') return renderTokens(tokenizeJs(src), opts.slot, '____');
+    return renderTokens(tokenizeHtml(src, !!opts.inTag), opts.slot, '{}');
+}
+
+// მოკლე ფრაგმენტი (ტექსტის შიგნით `...`) JavaScript-ის ტესტში ყოველთვის ფერადდება, HTML-ის ტესტში - მხოლოდ თუ HTML-ს ჰგავს: <p>, &lt;, type="text"
 function codeNode(text) {
+    if (/^<[!\/]?[A-Za-z]/.test(text)) return highlight(text, { lang: 'html' });
+    if (QUIZ.lang === 'js') return highlight(text);
     if (/^[\w-]+="[^"]*"$/.test(text)) return highlight(text, { inTag: true });
-    if (/^<[!\/]?[A-Za-z]/.test(text) || /^&#?\w+;$/.test(text)) return highlight(text);
+    if (/^&#?\w+;$/.test(text)) return highlight(text);
     return text;
 }
 
-// `ასე` ჩაწერილ ნაწილს <code>-ად აქცევს (უსაფრთხოდ, textContent-ით)
+// `ასე` ჩაწერილ ნაწილს <code>-ად აქცევს (უსაფრთხოდ, textContent-ით). თვით ბრჭყალის საჩვენებლად დაწერე \` (JS-ის სტრიქონში: '\\`')
+const unescapeTick = t => t.replace(/\\`/g, '`');
 function rich(text) {
-    return text.split('`').map((part, i) => (i % 2 ? h('code', {}, codeNode(part)) : part));
+    return text.split(/(?<!\\)`/).map((part, i) => (i % 2 ? h('code', {}, codeNode(unescapeTick(part))) : unescapeTick(part)));
 }
 
 function shuffle(arr) {
@@ -124,7 +188,10 @@ function shuffle(arr) {
 }
 
 const sameList = (a, b) => a.length === b.length && a.every((v, i) => v === b[i]);
-const normalize = s => s.trim().toLowerCase().replace(/\s+/g, '').replace(/^["']|["']$/g, '');
+// HTML-ში დიდი/პატარა ასო და ბრჭყალები არ ითვლება; JavaScript-ში ასოების რეგისტრი მნიშვნელოვანია (getElementById ≠ getelementbyid)
+const normalize = s => (QUIZ.lang === 'js'
+    ? s.trim().replace(/\s+/g, '').replace(/"/g, "'")
+    : s.trim().toLowerCase().replace(/\s+/g, '').replace(/^["']|["']$/g, ''));
 
 // ორდერის კითხვებში ჩაღრმავებას არ ვითვალისწინებთ
 QUESTIONS.forEach(q => { if (q.type === 'order') q.correct = q.lines.map(l => l.trim()); });
@@ -150,7 +217,7 @@ let S = QUESTIONS.map(initState);
 let submitted = false;
 let startedAt = null;   // "ტესტის დაწყებაზე" დაჭერის დრო - აქედან ითვლება დახარჯული დრო
 let me = null;          // { name, group, lecturerId, lecturer } - დაწყების შემდეგ
-const QUIZ_ID = 'html-intro-4';
+const QUIZ_ID = QUIZ.id;
 const fmtTime = sec => (sec > 0 ? Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0') : '-');
 let pendingPayload = null;
 
@@ -349,7 +416,7 @@ function widgetBug(q, st, qi, review) {
 }
 
 function widgetFill(q, st, qi, review) {
-    const input = h('input', { type: 'text', class: 'fillin', autocomplete: 'off', spellcheck: 'false', maxlength: '20', 'aria-label': 'შენი პასუხი', disabled: review });
+    const input = h('input', { type: 'text', class: 'fillin', autocomplete: 'off', spellcheck: 'false', maxlength: '40', 'aria-label': 'შენი პასუხი', disabled: review });
     input.value = st.val;
     if (review) input.classList.add(isCorrect(q, st) ? 'ok' : 'bad');
     input.addEventListener('input', () => { st.val = input.value; updateProgress(); });
@@ -406,6 +473,7 @@ function renderQuestion(q, i, review) {
         review ? h('span', { class: 'status' }, ok ? '✔ სწორია' : '✘ არასწორია') : null
     ));
     card.append(h('p', { class: 'qt' }, rich(q.text)));
+    if (q.snippet) card.append(h('pre', { class: 'code snippet' }, highlight(Array.isArray(q.snippet) ? q.snippet.join('\n') : q.snippet, { lang: q.snippetLang })));
     if (q.image) card.append(figure(q.image));
     if (!review) card.append(h('p', { class: 'hint' }, hintFor(q)));
     card.append(WIDGETS[q.type](q, st, i, review));
@@ -611,10 +679,10 @@ async function submit() {
     const now = new Date();
     const date = [now.getDate(), now.getMonth() + 1].map(n => String(n).padStart(2, '0')).concat(now.getFullYear()).join('.');
     let msg;
-    if (score >= 23) msg = 'შესანიშნავი შედეგია! HTML-ის საფუძვლები კარგად გაქვს ათვისებული.';
-    else if (score >= 18) msg = 'კარგი შედეგია! გადახედე არასწორ კითხვებს და გაიმეორე მასალა.';
-    else if (score >= 13) msg = 'საშუალო შედეგია. გადახედე ლექციის index.html ფაილს და არასწორ კითხვებს.';
-    else msg = 'კარგად გადახედე ლექციის მასალას (index.html) და არასწორი კითხვების განმარტებებს - აუცილებლად გამოგივა!';
+    if (pct >= 90) msg = 'შესანიშნავი შედეგია! მასალა კარგად გაქვს ათვისებული.';
+    else if (pct >= 75) msg = 'კარგი შედეგია! გადახედე არასწორ კითხვებს და გაიმეორე მასალა.';
+    else if (pct >= 50) msg = 'საშუალო შედეგია. გადახედე ლექციის მასალას და არასწორ კითხვებს.';
+    else msg = 'კარგად გადახედე ლექციის მასალას და არასწორი კითხვების განმარტებებს - აუცილებლად გამოგივა!';
 
     document.getElementById('resWho').textContent = `${me.name} · ${me.group} · ${date} · დრო: ${fmtTime(timeSec)}`;
     document.getElementById('resScore').textContent = `${score} / ${total}`;
@@ -628,7 +696,7 @@ async function submit() {
         typesEl.append(h('li', {}, `${TYPE_LABEL[t]}: ${byType[t].ok} / ${byType[t].total}`));
         typeLines.push(`${TYPE_LABEL[t]}: ${byType[t].ok}/${byType[t].total}`);
     });
-    lastReport = `HTML საშინაო დავალება\n${me.name} · ${me.group} · ლექტორი: ${me.lecturer}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\nდრო: ${fmtTime(timeSec)}\n${date}`;
+    lastReport = `საშინაო დავალება: ${QUIZ.title}\n${me.name} · ${me.group} · ლექტორი: ${me.lecturer}\nქულა: ${score}/${total} (${pct}%)\n${typeLines.join(' · ')}\nდრო: ${fmtTime(timeSec)}\n${date}`;
 
     document.getElementById('result').hidden = false;
     document.getElementById('submitBox').hidden = true;
@@ -656,6 +724,14 @@ async function copyReport() {
     btn.textContent = done ? 'დაკოპირდა ✔' : 'ვერ დაკოპირდა - გადაიღე სურათი';
     setTimeout(() => { btn.textContent = 'შედეგის კოპირება'; }, 2500);
 }
+
+// გვერდის სათაური, ილუსტრაცია და პროგრესი არჩეული ტესტის მიხედვით
+document.title = `${QUIZ.title} - საშინაო დავალება`;
+$('pageTitle').textContent = `საშინაო დავალება: ${QUIZ.title}`;
+if (QUIZ.hero) $('heroImg').src = QUIZ.hero;
+$('introNote').replaceChildren(...rich(QUIZ.note || ''));
+$('progressText').textContent = `პასუხი გაცემულია: 0 / ${QUESTIONS.length}`;
+document.querySelector('.track').setAttribute('aria-valuemax', QUESTIONS.length);
 
 $('startForm').addEventListener('submit', start);
 $('metaRetry').addEventListener('click', loadMeta);
